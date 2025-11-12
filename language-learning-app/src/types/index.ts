@@ -7,7 +7,7 @@ export type ConceptType = 'clear' | 'fuzzy';
 export type VocabularyLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
 
 // 词性
-export type PartOfSpeech = 'n.' | 'v.' | 'adj.' | 'adv.' | 'prep.' | 'conj.' | 'pron.';
+export type PartOfSpeech = 'n.' | 'v.' | 'adj.' | 'adv.' | 'prep.' | 'conj.' | 'pron.' | 'det.' | 'num.' | 'interj.';
 
 // 词汇来源
 export type VocabularySource = 'oxford_3000' | 'awl' | 'gre_357';

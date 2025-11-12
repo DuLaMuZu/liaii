@@ -7,6 +7,7 @@ import { StatsView } from './components/stats/StatsView';
 import { useAppStore } from './stores/useAppStore';
 import { initializeDatabase, db } from './lib/database/db';
 import { allSampleConcepts } from './data/sampleVocabulary';
+import { allOxford3000Concepts } from './data/oxford3000Vocabulary';
 
 function App() {
   const { isInitialized, isLoading, currentView, initialize } = useAppStore();
@@ -19,9 +20,14 @@ function App() {
       // 检查是否需要加载初始词汇数据
       const conceptCount = await db.concepts.count();
       if (conceptCount === 0) {
-        // 加载样本词汇数据
-        await db.concepts.bulkAdd(allSampleConcepts);
-        console.log('Sample vocabulary loaded:', allSampleConcepts.length, 'concepts');
+        // 加载样本词汇和Oxford 3000词汇数据
+        const allConcepts = [...allSampleConcepts, ...allOxford3000Concepts];
+        await db.concepts.bulkAdd(allConcepts);
+        console.log('Vocabulary loaded:', {
+          sample: allSampleConcepts.length,
+          oxford3000: allOxford3000Concepts.length,
+          total: allConcepts.length
+        });
       }
 
       // 初始化应用状态
