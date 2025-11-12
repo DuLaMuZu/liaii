@@ -172,9 +172,9 @@
             background: var(--bg-card);
         }
 
-        /* Learning View */
+        /* Learning View - New Design */
         .learning-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -192,64 +192,127 @@
             transition: width 0.3s;
         }
 
-        .concept-card {
+        .learning-card {
             background: var(--bg-secondary);
             border-radius: 1.5rem;
             padding: 3rem;
             border: 2px solid var(--border);
             margin-bottom: 2rem;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .word-header {
+        /* Step 1: Show definition */
+        .definition-step {
             text-align: center;
+        }
+
+        .definition-prompt {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
             margin-bottom: 2rem;
         }
 
+        .definition-text {
+            font-size: 2rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .reveal-btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Step 2: Show word and details */
+        .word-details {
+            display: none;
+        }
+
+        .word-details.visible {
+            display: block;
+        }
+
         .english-word {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--primary);
+            text-align: center;
             margin-bottom: 0.5rem;
         }
 
         .part-of-speech {
-            font-size: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
             color: var(--text-secondary);
             font-style: italic;
+            margin-bottom: 2rem;
         }
 
-        .definition {
-            font-size: 1.25rem;
-            line-height: 1.8;
-            margin: 2rem 0;
-            color: var(--text);
-        }
-
-        .example {
+        .example-sentence {
             background: var(--bg-card);
             padding: 1.5rem;
             border-radius: 0.75rem;
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--secondary);
             margin: 2rem 0;
             font-style: italic;
+            font-size: 1.1rem;
         }
 
-        .chinese-translation {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
+        .chinese-section {
             margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
             display: none;
         }
 
-        .chinese-translation.visible {
+        .chinese-section.visible {
             display: block;
+        }
+
+        .chinese-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
         }
 
         .chinese-words {
             font-size: 1.5rem;
             color: var(--secondary);
-            margin-top: 0.5rem;
+        }
+
+        .toggle-chinese-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 1rem 0;
+        }
+
+        .toggle-chinese-btn:hover {
+            background: var(--bg-secondary);
         }
 
         .distance-visualization {
@@ -293,11 +356,27 @@
             background: linear-gradient(90deg, #ec4899, #db2777);
         }
 
+        /* Step 3: Rating buttons appear after reveal */
+        .rating-section {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .rating-section.visible {
+            display: block;
+        }
+
+        .rating-prompt {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
         .rating-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-top: 2rem;
         }
 
         .rating-btn {
@@ -358,6 +437,16 @@
             border-bottom: none;
         }
 
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
         .toggle {
             position: relative;
             width: 60px;
@@ -385,6 +474,15 @@
 
         .toggle.active .toggle-slider {
             transform: translateX(30px);
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
         }
 
         /* Statistics View */
@@ -443,16 +541,20 @@
                 font-size: 2rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                gap: 1rem;
+            .definition-text {
+                font-size: 1.5rem;
             }
 
             .english-word {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+
+            .rating-buttons {
+                flex-direction: column;
+            }
+
+            .rating-btn {
+                max-width: 100%;
             }
         }
     </style>
@@ -481,7 +583,7 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="total-words">4772</div>
+                    <div class="stat-value" id="total-words">0</div>
                     <div class="stat-label">Total Words</div>
                 </div>
                 <div class="stat-card">
@@ -499,7 +601,7 @@
             </div>
         </div>
 
-        <!-- Learning View -->
+        <!-- Learning View - Redesigned -->
         <div id="learning-view" class="view">
             <div class="learning-container">
                 <div class="progress-bar">
@@ -507,57 +609,71 @@
                 </div>
 
                 <div id="learning-content">
-                    <div class="concept-card">
-                        <div class="word-header">
-                            <div class="english-word" id="current-word">Loading...</div>
+                    <div class="learning-card">
+                        <!-- Step 1: Show Definition First -->
+                        <div class="definition-step" id="definition-step">
+                            <p class="definition-prompt">What word has this meaning?</p>
+                            <div class="definition-text" id="definition-display"></div>
+                            <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
+                        </div>
+
+                        <!-- Step 2: Show Word and Details (hidden initially) -->
+                        <div class="word-details" id="word-details">
+                            <div class="english-word" id="current-word"></div>
                             <div class="part-of-speech" id="part-of-speech"></div>
-                        </div>
 
-                        <div class="definition" id="definition"></div>
+                            <div class="example-sentence" id="example"></div>
 
-                        <div class="example" id="example"></div>
+                            <button class="toggle-chinese-btn" onclick="toggleChinese()">
+                                <span id="chinese-toggle-text">Show Chinese Reference</span>
+                            </button>
 
-                        <div class="chinese-translation" id="chinese-translation">
-                            <strong>Reference:</strong>
-                            <div class="chinese-words" id="chinese-words"></div>
-                        </div>
+                            <div class="chinese-section" id="chinese-section">
+                                <div class="chinese-label">Chinese Translation:</div>
+                                <div class="chinese-words" id="chinese-words"></div>
+                            </div>
 
-                        <div class="distance-visualization">
-                            <div class="distance-item">
-                                <div class="distance-label">
-                                    <span>Cultural Meaning Distance</span>
-                                    <span id="meaning-distance-value">0.0</span>
+                            <div class="distance-visualization" id="distance-viz">
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span>Cultural Meaning Distance</span>
+                                        <span id="meaning-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
+                                    </div>
                                 </div>
-                                <div class="distance-bar">
-                                    <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
+
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span>Visual Distance</span>
+                                        <span id="visual-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span>Pronunciation Distance</span>
+                                        <span id="pronunciation-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="distance-item">
-                                <div class="distance-label">
-                                    <span>Visual Distance</span>
-                                    <span id="visual-distance-value">0.0</span>
-                                </div>
-                                <div class="distance-bar">
-                                    <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
-                                </div>
-                            </div>
-
-                            <div class="distance-item">
-                                <div class="distance-label">
-                                    <span>Pronunciation Distance</span>
-                                    <span id="pronunciation-distance-value">0.0</span>
-                                </div>
-                                <div class="distance-bar">
-                                    <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
+                            <!-- Step 3: Rating Buttons (appear after reveal) -->
+                            <div class="rating-section" id="rating-section">
+                                <p class="rating-prompt">How well do you know this word?</p>
+                                <div class="rating-buttons">
+                                    <button class="rating-btn good" onclick="rateWord('good')">I Know It</button>
+                                    <button class="rating-btn normal" onclick="rateWord('normal')">Somewhat</button>
+                                    <button class="rating-btn bad" onclick="rateWord('bad')">New to Me</button>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="rating-buttons">
-                            <button class="rating-btn good" onclick="rateWord('good')">Easy</button>
-                            <button class="rating-btn normal" onclick="rateWord('normal')">Medium</button>
-                            <button class="rating-btn bad" onclick="rateWord('bad')">Hard</button>
                         </div>
                     </div>
                 </div>
@@ -624,22 +740,6 @@
                     <strong id="stats-streak">0 days</strong>
                 </div>
             </div>
-
-            <div class="stats-detail">
-                <h2>Sources</h2>
-                <div class="stats-row">
-                    <span>Oxford 3000:</span>
-                    <strong id="stats-oxford">0 / 3868</strong>
-                </div>
-                <div class="stats-row">
-                    <span>Academic Word List:</span>
-                    <strong id="stats-awl">0 / 547</strong>
-                </div>
-                <div class="stats-row">
-                    <span>GRE 357:</span>
-                    <strong id="stats-gre">0 / 357</strong>
-                </div>
-            </div>
         </div>
 
         <!-- Settings View -->
@@ -647,15 +747,21 @@
             <h1 style="margin-bottom: 2rem;">Settings</h1>
 
             <div class="settings-section">
-                <h2>Display Settings</h2>
+                <h2>Display Preferences</h2>
                 <div class="setting-item">
-                    <span>Show Chinese Reference</span>
-                    <div class="toggle active" id="show-chinese-toggle" onclick="toggleSetting('showChinese', event)">
+                    <div class="setting-label">
+                        <div>Auto-show Chinese Reference</div>
+                        <div class="setting-description">Automatically display Chinese translation for each word</div>
+                    </div>
+                    <div class="toggle" id="auto-chinese-toggle" onclick="toggleSetting('autoChinese', event)">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
                 <div class="setting-item">
-                    <span>Show Distance Visualization</span>
+                    <div class="setting-label">
+                        <div>Show Distance Visualization</div>
+                        <div class="setting-description">Display cultural distance metrics for each word</div>
+                    </div>
                     <div class="toggle active" id="show-distance-toggle" onclick="toggleSetting('showDistance', event)">
                         <div class="toggle-slider"></div>
                     </div>
@@ -663,31 +769,34 @@
             </div>
 
             <div class="settings-section">
-                <h2>Learning Settings</h2>
+                <h2>Learning Configuration</h2>
                 <div class="setting-item">
                     <span>Words Per Session</span>
                     <select id="words-per-session" onchange="saveSetting('wordsPerSession', this.value)">
-                        <option value="10">10</option>
-                        <option value="20" selected>20</option>
-                        <option value="30">30</option>
-                        <option value="50">50</option>
+                        <option value="5">5 words</option>
+                        <option value="10">10 words</option>
+                        <option value="15" selected>15 words</option>
+                        <option value="20">20 words</option>
+                        <option value="30">30 words</option>
                     </select>
                 </div>
                 <div class="setting-item">
-                    <span>Learning Mode</span>
+                    <span>Learning Order</span>
                     <select id="learning-mode" onchange="saveSetting('learningMode', this.value)">
-                        <option value="sequential">Sequential</option>
-                        <option value="random" selected>Random</option>
-                        <option value="difficulty">By Difficulty</option>
+                        <option value="sequential">Sequential (A to Z)</option>
+                        <option value="random" selected>Random Selection</option>
+                        <option value="difficulty">By Difficulty (Easy First)</option>
                     </select>
                 </div>
             </div>
 
             <div class="settings-section">
                 <h2>Data Management</h2>
-                <button class="btn btn-secondary" onclick="exportData()">Export Progress</button>
-                <button class="btn btn-secondary" onclick="importData()" style="margin-left: 1rem;">Import Progress</button>
-                <button class="btn btn-secondary" onclick="resetProgress()" style="margin-left: 1rem; background: var(--danger);">Reset Progress</button>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="exportData()">Export Progress</button>
+                    <button class="btn btn-secondary" onclick="importData()">Import Progress</button>
+                    <button class="btn btn-secondary" onclick="resetProgress()" style="background: var(--danger); color: white;">Reset All Data</button>
+                </div>
             </div>
         </div>
     </main>
@@ -701,9 +810,9 @@
             wordsLearned: new Set(),
             wordProgress: {},
             settings: {
-                showChinese: true,
+                autoChinese: false,
                 showDistance: true,
-                wordsPerSession: 20,
+                wordsPerSession: 15,
                 learningMode: 'random'
             },
             stats: {
@@ -718,7 +827,8 @@
             sessionStats: {
                 correct: 0,
                 total: 0
-            }
+            },
+            currentWordRevealed: false
         };
 
         // Load data from localStorage
@@ -734,7 +844,6 @@
                 }
             } catch (error) {
                 console.error('Error loading data:', error);
-                // Continue with default state if loading fails
             }
             updateStats();
         }
@@ -757,11 +866,9 @@
 
             document.getElementById(`${viewName}-view`).classList.add('active');
 
-            // Add active class to clicked nav link if event exists
             if (e && e.target) {
                 e.target.classList.add('active');
             } else {
-                // Find and activate the corresponding nav link
                 const navLinks = document.querySelectorAll('.nav-links a');
                 navLinks.forEach(link => {
                     if (link.getAttribute('onclick').includes(viewName)) {
@@ -779,7 +886,6 @@
 
         // Start learning session
         function startLearning() {
-            // Check if vocabulary data is loaded
             if (!completeVocabularyData || completeVocabularyData.length === 0) {
                 alert('Vocabulary data is still loading. Please wait a moment and try again.');
                 return;
@@ -787,7 +893,6 @@
 
             showView('learning');
 
-            // Get words for session
             const wordCount = parseInt(appState.settings.wordsPerSession);
             let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
 
@@ -795,7 +900,6 @@
                 availableWords = completeVocabularyData;
             }
 
-            // Shuffle or sort based on mode
             if (appState.settings.learningMode === 'random') {
                 availableWords = availableWords.sort(() => Math.random() - 0.5);
             } else if (appState.settings.learningMode === 'difficulty') {
@@ -813,7 +917,7 @@
             showNextWord();
         }
 
-        // Show next word
+        // Show next word - Step 1: Show definition
         function showNextWord() {
             if (appState.currentIndex >= appState.currentSession.length) {
                 completeSession();
@@ -823,20 +927,26 @@
             const word = appState.currentSession[appState.currentIndex];
             const progress = (appState.currentIndex / appState.currentSession.length) * 100;
 
+            // Reset state
+            appState.currentWordRevealed = false;
+
+            // Update progress bar
             document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            // Step 1: Show only definition
+            document.getElementById('definition-step').style.display = 'block';
+            document.getElementById('word-details').classList.remove('visible');
+            document.getElementById('rating-section').classList.remove('visible');
+            document.getElementById('chinese-section').classList.remove('visible');
+
+            // Set definition
+            document.getElementById('definition-display').textContent = word.definition;
+
+            // Prepare word details (hidden)
             document.getElementById('current-word').textContent = word.english;
             document.getElementById('part-of-speech').textContent = word.partOfSpeech;
-            document.getElementById('definition').textContent = word.definition;
             document.getElementById('example').textContent = `"${word.example}"`;
             document.getElementById('chinese-words').textContent = word.chinese.join(', ');
-
-            // Show/hide Chinese based on settings
-            const chineseElem = document.getElementById('chinese-translation');
-            if (appState.settings.showChinese) {
-                chineseElem.classList.add('visible');
-            } else {
-                chineseElem.classList.remove('visible');
-            }
 
             // Update distance bars
             document.getElementById('meaning-distance-value').textContent = word.meaningDistance.toFixed(2);
@@ -847,13 +957,52 @@
 
             document.getElementById('pronunciation-distance-value').textContent = word.pronunciationDistance.toFixed(2);
             document.getElementById('pronunciation-distance-bar').style.width = `${word.pronunciationDistance * 100}%`;
+
+            // Show/hide distance visualization based on settings
+            document.getElementById('distance-viz').style.display = appState.settings.showDistance ? 'block' : 'none';
+
+            // Reset Chinese toggle button text
+            document.getElementById('chinese-toggle-text').textContent = 'Show Chinese Reference';
+
+            // Auto-show Chinese if setting enabled
+            if (appState.settings.autoChinese) {
+                document.getElementById('chinese-section').classList.add('visible');
+                document.getElementById('chinese-toggle-text').textContent = 'Hide Chinese Reference';
+            }
         }
 
-        // Rate word
+        // Reveal word - Step 2: Show word and details
+        function revealWord() {
+            appState.currentWordRevealed = true;
+
+            // Hide definition step
+            document.getElementById('definition-step').style.display = 'none';
+
+            // Show word details
+            document.getElementById('word-details').classList.add('visible');
+
+            // Show rating buttons
+            document.getElementById('rating-section').classList.add('visible');
+        }
+
+        // Toggle Chinese reference
+        function toggleChinese() {
+            const chineseSection = document.getElementById('chinese-section');
+            const toggleText = document.getElementById('chinese-toggle-text');
+
+            if (chineseSection.classList.contains('visible')) {
+                chineseSection.classList.remove('visible');
+                toggleText.textContent = 'Show Chinese Reference';
+            } else {
+                chineseSection.classList.add('visible');
+                toggleText.textContent = 'Hide Chinese Reference';
+            }
+        }
+
+        // Rate word - Step 3: Record rating and move to next
         function rateWord(rating) {
             const word = appState.currentSession[appState.currentIndex];
 
-            // Update progress
             if (!appState.wordProgress[word.english]) {
                 appState.wordProgress[word.english] = {
                     reviews: 0,
@@ -864,13 +1013,11 @@
             appState.wordProgress[word.english].reviews++;
             appState.wordProgress[word.english].ratings.push(rating);
 
-            // Mark as learned if rated 'good' 3 times
             const goodRatings = appState.wordProgress[word.english].ratings.filter(r => r === 'good').length;
             if (goodRatings >= 3) {
                 appState.wordsLearned.add(word.english);
             }
 
-            // Update stats
             appState.stats.totalAnswers++;
             appState.sessionStats.total++;
             if (rating === 'good') {
@@ -899,7 +1046,6 @@
             appState.stats.totalTime += sessionTime;
             appState.stats.sessions++;
 
-            // Update streak
             const today = new Date().toDateString();
             if (appState.stats.lastStudyDate !== today) {
                 const yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -945,30 +1091,11 @@
             document.getElementById('stats-avg-session').textContent = `${avgSession}m`;
 
             document.getElementById('stats-streak').textContent = `${appState.stats.streak} days`;
-
-            // Source stats
-            const oxford = Array.from(appState.wordsLearned).filter(w => {
-                const word = completeVocabularyData.find(v => v.english === w);
-                return word && word.source === 'oxford_3000';
-            }).length;
-            document.getElementById('stats-oxford').textContent = `${oxford} / 3868`;
-
-            const awl = Array.from(appState.wordsLearned).filter(w => {
-                const word = completeVocabularyData.find(v => v.english === w);
-                return word && word.source === 'awl';
-            }).length;
-            document.getElementById('stats-awl').textContent = `${awl} / 547`;
-
-            const gre = Array.from(appState.wordsLearned).filter(w => {
-                const word = completeVocabularyData.find(v => v.english === w);
-                return word && word.source === 'gre_357';
-            }).length;
-            document.getElementById('stats-gre').textContent = `${gre} / 357`;
         }
 
         // Update settings view
         function updateSettingsView() {
-            document.getElementById('show-chinese-toggle').classList.toggle('active', appState.settings.showChinese);
+            document.getElementById('auto-chinese-toggle').classList.toggle('active', appState.settings.autoChinese);
             document.getElementById('show-distance-toggle').classList.toggle('active', appState.settings.showDistance);
             document.getElementById('words-per-session').value = appState.settings.wordsPerSession;
             document.getElementById('learning-mode').value = appState.settings.learningMode;
@@ -979,20 +1106,12 @@
             appState.settings[setting] = !appState.settings[setting];
             if (e && e.target) {
                 e.target.classList.toggle('active');
-            } else {
-                // Update the toggle element directly
-                const toggleId = `show-${setting.toLowerCase().replace('show', '')}-toggle`;
-                const toggleElem = document.getElementById(toggleId);
-                if (toggleElem) {
-                    toggleElem.classList.toggle('active');
-                }
             }
             saveData();
         }
 
         // Save setting
         function saveSetting(setting, value) {
-            // Convert numeric settings to numbers
             if (setting === 'wordsPerSession') {
                 appState.settings[setting] = parseInt(value);
             } else {
@@ -1030,7 +1149,6 @@
                 const reader = new FileReader();
                 reader.onload = event => {
                     try {
-                        // Validate JSON
                         const data = JSON.parse(event.target.result);
                         if (!data.wordsLearned || !data.stats) {
                             alert('Invalid progress file format.');
@@ -1039,7 +1157,7 @@
                         localStorage.setItem('languageLearningData', event.target.result);
                         loadData();
                         alert('Progress imported successfully!');
-                        location.reload(); // Refresh to show updated data
+                        location.reload();
                     } catch (error) {
                         alert('Error importing file: Invalid JSON format.');
                         console.error('Import error:', error);
