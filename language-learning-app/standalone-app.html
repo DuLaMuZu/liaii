@@ -454,55 +454,27 @@
         /* Step 2: Show word and details - Celebrate the reveal */
         .word-details {
             display: none;
-            opacity: 0;
         }
 
         .word-details.visible {
-            display: block;
-            animation: revealWord var(--transition-slow) ease-out forwards;
-        }
-
-        @keyframes revealWord {
-            0% {
-                opacity: 0;
-                transform: scale(0.95) translateY(20px);
-            }
-            60% {
-                opacity: 1;
-                transform: scale(1.02);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         .english-word {
             font-size: 4rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary);
             text-align: center;
             margin-bottom: var(--space-sm);
             letter-spacing: -0.02em;
-            animation: wordPulse 0.6s ease-out;
-        }
-
-        @keyframes wordPulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
         }
 
         .part-of-speech {
             text-align: center;
             font-size: 1rem;
-            color: var(--text-tertiary);
+            color: var(--text-secondary);
             font-style: italic;
             font-weight: 500;
             margin-bottom: var(--space-xl);
@@ -517,6 +489,7 @@
             margin: 2rem 0;
             font-style: italic;
             font-size: 1.1rem;
+            color: var(--text-primary);
         }
 
         .chinese-section {
@@ -1473,6 +1446,7 @@
             }
 
             const word = appState.currentSession[appState.currentIndex];
+            console.log('showNextWord() - Current word:', word);
             const progress = (appState.currentIndex / appState.currentSession.length) * 100;
 
             // Reset state
@@ -1497,7 +1471,9 @@
             badge.className = 'word-status-badge ' + (isReview ? 'review' : 'new');
 
             // Prepare word details (hidden)
-            document.getElementById('current-word').textContent = word.english;
+            const wordElement = document.getElementById('current-word');
+            wordElement.textContent = word.english;
+            console.log('Set current-word to:', word.english, 'Element text:', wordElement.textContent);
             document.getElementById('part-of-speech').textContent = word.partOfSpeech;
             document.getElementById('example').textContent = `"${word.example}"`;
             document.getElementById('chinese-words').textContent = word.chinese.join(', ');
@@ -1537,16 +1513,38 @@
 
         // Reveal word - Step 2: Show word and details
         function revealWord() {
+            console.log('revealWord() called');
             appState.currentWordRevealed = true;
 
             // Hide definition step
-            document.getElementById('definition-step').style.display = 'none';
+            const defStep = document.getElementById('definition-step');
+            console.log('definition-step element:', defStep);
+            if (defStep) {
+                defStep.style.display = 'none';
+                console.log('definition-step hidden');
+            }
 
             // Show word details
-            document.getElementById('word-details').classList.add('visible');
+            const wordDetails = document.getElementById('word-details');
+            console.log('word-details element:', wordDetails);
+            console.log('word-details innerHTML length:', wordDetails ? wordDetails.innerHTML.length : 'null');
+            if (wordDetails) {
+                wordDetails.classList.add('visible');
+                wordDetails.style.display = 'block';
+                wordDetails.style.opacity = '1';
+                console.log('word-details classList:', wordDetails.classList);
+                console.log('word-details computedStyle display:', window.getComputedStyle(wordDetails).display);
+            }
 
             // Show rating buttons
-            document.getElementById('rating-section').classList.add('visible');
+            const ratingSection = document.getElementById('rating-section');
+            console.log('rating-section element:', ratingSection);
+            if (ratingSection) {
+                ratingSection.classList.add('visible');
+                console.log('rating-section shown');
+            }
+
+            console.log('revealWord() completed');
         }
 
         // Toggle Chinese reference
@@ -1774,6 +1772,14 @@
         }
 
         // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            console.log('completeVocabularyData exists:', typeof completeVocabularyData !== 'undefined');
+            console.log('Vocabulary data length:', completeVocabularyData ? completeVocabularyData.length : 0);
+            if (completeVocabularyData && completeVocabularyData.length > 0) {
+                console.log('First word:', completeVocabularyData[0]);
+            }
+        });
         loadData();
     </script>
 </body>
