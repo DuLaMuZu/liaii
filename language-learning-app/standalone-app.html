@@ -339,6 +339,7 @@
         .definition-step {
             text-align: center;
             animation: fadeIn var(--transition-slow) ease-out;
+            position: relative;
         }
 
         @keyframes fadeIn {
@@ -350,6 +351,29 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .word-status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-lg);
+        }
+
+        .word-status-badge.new {
+            background: rgba(66, 153, 225, 0.15);
+            color: #4299e1;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+
+        .word-status-badge.review {
+            background: rgba(237, 137, 54, 0.15);
+            color: #ed8936;
+            border: 1px solid rgba(237, 137, 54, 0.3);
         }
 
         .definition-prompt {
@@ -927,20 +951,20 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="total-words">0</div>
-                    <div class="stat-label">Total Words</div>
+                    <div class="stat-value" id="words-due">0</div>
+                    <div class="stat-label">Due for Review</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="words-learned">0</div>
-                    <div class="stat-label">Words Learned</div>
+                    <div class="stat-label">Words Mastered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="words-learning">0</div>
+                    <div class="stat-label">In Progress</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="study-streak">0</div>
                     <div class="stat-label">Day Streak</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="accuracy-rate">0%</div>
-                    <div class="stat-label">Accuracy</div>
                 </div>
             </div>
         </div>
@@ -956,6 +980,7 @@
                     <div class="learning-card">
                         <!-- Step 1: Show Definition First -->
                         <div class="definition-step" id="definition-step">
+                            <div class="word-status-badge" id="word-status-badge"></div>
                             <p class="definition-prompt">What word has this meaning?</p>
                             <div class="definition-text" id="definition-display"></div>
                             <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
@@ -1047,6 +1072,10 @@
                             <span>Time Spent:</span>
                             <strong id="session-time">0m</strong>
                         </div>
+                        <div class="stats-row" id="next-review-row" style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
+                            <span>Next Review:</span>
+                            <strong id="next-review-info">-</strong>
+                        </div>
                     </div>
                     <button class="btn btn-primary" onclick="startLearning()">Start New Session</button>
                     <button class="btn btn-secondary" onclick="showView('home', event)" style="margin-top: 1rem;">Back to Home</button>
@@ -1134,10 +1163,14 @@
                     </select>
                 </div>
                 <div class="setting-item">
-                    <span>Learning Order</span>
+                    <div class="setting-label">
+                        <div>Learning Order</div>
+                        <div class="setting-description">How words are selected for each session</div>
+                    </div>
                     <select id="learning-mode" onchange="saveSetting('learningMode', this.value)">
+                        <option value="adaptive" selected>Adaptive (SRS)</option>
+                        <option value="random">Random Selection</option>
                         <option value="sequential">Sequential (A to Z)</option>
-                        <option value="random" selected>Random Selection</option>
                         <option value="difficulty">By Difficulty (Easy First)</option>
                     </select>
                 </div>
@@ -1161,12 +1194,13 @@
             currentSession: [],
             currentIndex: 0,
             wordsLearned: new Set(),
-            wordProgress: {},
+            wordProgress: {}, // Enhanced with SRS data
             settings: {
                 autoChinese: false,
                 showDistance: true,
                 wordsPerSession: 15,
-                learningMode: 'random'
+                learningMode: 'adaptive', // Changed default to adaptive
+                reviewMixRatio: 0.3 // 30% review, 70% new
             },
             stats: {
                 totalTime: 0,
@@ -1183,6 +1217,91 @@
             },
             currentWordRevealed: false
         };
+
+        // SRS Algorithm - Simplified SuperMemo SM-2
+        function calculateNextReview(word, rating) {
+            const progress = appState.wordProgress[word] || {
+                interval: 1, // Days until next review
+                easeFactor: 2.5, // Difficulty multiplier
+                repetitions: 0, // Successful repetitions count
+                nextReview: Date.now(),
+                lastReview: null
+            };
+
+            let { interval, easeFactor, repetitions } = progress;
+
+            if (rating === 'good') { // Quality: 5 (perfect)
+                repetitions++;
+                if (repetitions === 1) {
+                    interval = 1;
+                } else if (repetitions === 2) {
+                    interval = 6;
+                } else {
+                    interval = Math.round(interval * easeFactor);
+                }
+                easeFactor = Math.max(1.3, easeFactor + 0.1);
+            } else if (rating === 'normal') { // Quality: 3 (recalled with difficulty)
+                interval = Math.max(1, Math.round(interval * 0.5));
+                easeFactor = Math.max(1.3, easeFactor - 0.15);
+            } else { // rating === 'bad', Quality: 0 (complete blank)
+                repetitions = 0;
+                interval = 1;
+                easeFactor = Math.max(1.3, easeFactor - 0.2);
+            }
+
+            return {
+                interval,
+                easeFactor: Math.round(easeFactor * 100) / 100,
+                repetitions,
+                nextReview: Date.now() + (interval * 24 * 60 * 60 * 1000),
+                lastReview: Date.now(),
+                totalReviews: (progress.totalReviews || 0) + 1,
+                ratings: [...(progress.ratings || []), rating]
+            };
+        }
+
+        // Get words due for review
+        function getDueWords() {
+            const now = Date.now();
+            return Object.keys(appState.wordProgress)
+                .filter(word => {
+                    const progress = appState.wordProgress[word];
+                    return progress.nextReview && progress.nextReview <= now;
+                })
+                .map(word => {
+                    const wordData = completeVocabularyData.find(w => w.english === word);
+                    return { ...wordData, priority: 'review' };
+                });
+        }
+
+        // Get new words (not yet studied)
+        function getNewWords() {
+            return completeVocabularyData.filter(w =>
+                !appState.wordProgress[w.english] &&
+                !appState.wordsLearned.has(w.english)
+            );
+        }
+
+        // Adaptive word selection - mix reviews and new words
+        function selectAdaptiveWords(count) {
+            const dueWords = getDueWords();
+            const newWords = getNewWords();
+
+            const reviewCount = Math.min(
+                Math.ceil(count * appState.settings.reviewMixRatio),
+                dueWords.length
+            );
+            const newCount = Math.min(count - reviewCount, newWords.length);
+
+            // Prioritize due reviews
+            const selected = [
+                ...dueWords.slice(0, reviewCount),
+                ...newWords.slice(0, newCount)
+            ];
+
+            // Shuffle to mix reviews and new words
+            return selected.sort(() => Math.random() - 0.5);
+        }
 
         // Load data from localStorage
         function loadData() {
@@ -1237,7 +1356,7 @@
             }
         }
 
-        // Start learning session
+        // Start learning session with SRS
         function startLearning() {
             if (!completeVocabularyData || completeVocabularyData.length === 0) {
                 alert('Vocabulary data is still loading. Please wait a moment and try again.');
@@ -1247,19 +1366,39 @@
             showView('learning');
 
             const wordCount = parseInt(appState.settings.wordsPerSession);
-            let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+            let selectedWords = [];
 
-            if (availableWords.length === 0) {
-                availableWords = completeVocabularyData;
-            }
-
-            if (appState.settings.learningMode === 'random') {
-                availableWords = availableWords.sort(() => Math.random() - 0.5);
+            if (appState.settings.learningMode === 'adaptive') {
+                // Use SRS adaptive selection
+                selectedWords = selectAdaptiveWords(wordCount);
+            } else if (appState.settings.learningMode === 'sequential') {
+                // Sequential mode - A to Z
+                let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+                if (availableWords.length === 0) {
+                    availableWords = completeVocabularyData;
+                }
+                selectedWords = availableWords.slice(0, wordCount);
+            } else if (appState.settings.learningMode === 'random') {
+                // Random selection
+                let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+                if (availableWords.length === 0) {
+                    availableWords = completeVocabularyData;
+                }
+                selectedWords = availableWords
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, wordCount);
             } else if (appState.settings.learningMode === 'difficulty') {
-                availableWords = availableWords.sort((a, b) => a.totalDistance - b.totalDistance);
+                // By difficulty
+                let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+                if (availableWords.length === 0) {
+                    availableWords = completeVocabularyData;
+                }
+                selectedWords = availableWords
+                    .sort((a, b) => (a.totalDistance || 0) - (b.totalDistance || 0))
+                    .slice(0, wordCount);
             }
 
-            appState.currentSession = availableWords.slice(0, wordCount);
+            appState.currentSession = selectedWords;
             appState.currentIndex = 0;
             appState.sessionStartTime = Date.now();
             appState.sessionStats = { correct: 0, total: 0 };
@@ -1294,6 +1433,12 @@
 
             // Set definition
             document.getElementById('definition-display').textContent = word.definition;
+
+            // Show word status badge (NEW vs REVIEW)
+            const badge = document.getElementById('word-status-badge');
+            const isReview = appState.wordProgress[word.english] && appState.wordProgress[word.english].lastReview;
+            badge.textContent = isReview ? 'Review' : 'New';
+            badge.className = 'word-status-badge ' + (isReview ? 'review' : 'new');
 
             // Prepare word details (hidden)
             document.getElementById('current-word').textContent = word.english;
@@ -1352,25 +1497,20 @@
             }
         }
 
-        // Rate word - Step 3: Record rating and move to next
+        // Rate word with SRS algorithm
         function rateWord(rating) {
             const word = appState.currentSession[appState.currentIndex];
 
-            if (!appState.wordProgress[word.english]) {
-                appState.wordProgress[word.english] = {
-                    reviews: 0,
-                    ratings: []
-                };
-            }
+            // Update SRS data using SuperMemo SM-2 algorithm
+            appState.wordProgress[word.english] = calculateNextReview(word.english, rating);
 
-            appState.wordProgress[word.english].reviews++;
-            appState.wordProgress[word.english].ratings.push(rating);
-
-            const goodRatings = appState.wordProgress[word.english].ratings.filter(r => r === 'good').length;
-            if (goodRatings >= 3) {
+            // Mark as learned if repetitions >= 3 with good ratings
+            const progress = appState.wordProgress[word.english];
+            if (progress.repetitions >= 3) {
                 appState.wordsLearned.add(word.english);
             }
 
+            // Update session stats
             appState.stats.totalAnswers++;
             appState.sessionStats.total++;
             if (rating === 'good') {
@@ -1383,7 +1523,7 @@
             showNextWord();
         }
 
-        // Complete session
+        // Complete session with SRS insights
         function completeSession() {
             document.getElementById('learning-content').style.display = 'none';
             document.getElementById('completion-screen').style.display = 'block';
@@ -1395,6 +1535,35 @@
             document.getElementById('session-words').textContent = appState.sessionStats.total;
             document.getElementById('session-accuracy').textContent = `${sessionAccuracy}%`;
             document.getElementById('session-time').textContent = `${sessionTime}m`;
+
+            // Calculate next review info
+            const dueWords = getDueWords();
+            const allProgress = Object.values(appState.wordProgress);
+            if (allProgress.length > 0 && dueWords.length === 0) {
+                // Find nearest review date
+                const nextReviews = allProgress
+                    .filter(p => p.nextReview)
+                    .map(p => p.nextReview)
+                    .sort((a, b) => a - b);
+
+                if (nextReviews.length > 0) {
+                    const nextReview = nextReviews[0];
+                    const hoursUntil = Math.round((nextReview - Date.now()) / (1000 * 60 * 60));
+
+                    if (hoursUntil < 24) {
+                        document.getElementById('next-review-info').textContent = `${hoursUntil}h`;
+                    } else {
+                        const daysUntil = Math.round(hoursUntil / 24);
+                        document.getElementById('next-review-info').textContent = `${daysUntil} day${daysUntil > 1 ? 's' : ''}`;
+                    }
+                } else {
+                    document.getElementById('next-review-info').textContent = 'No reviews scheduled';
+                }
+            } else if (dueWords.length > 0) {
+                document.getElementById('next-review-info').textContent = `${dueWords.length} word${dueWords.length > 1 ? 's' : ''} now`;
+            } else {
+                document.getElementById('next-review-info').textContent = 'Start learning!';
+            }
 
             appState.stats.totalTime += sessionTime;
             appState.stats.sessions++;
@@ -1414,15 +1583,21 @@
             updateStats();
         }
 
-        // Update statistics
+        // Update statistics with SRS data
         function updateStats() {
-            document.getElementById('total-words').textContent = completeVocabularyData.length;
-            document.getElementById('words-learned').textContent = appState.wordsLearned.size;
-            document.getElementById('study-streak').textContent = appState.stats.streak;
+            // Words due for review
+            const dueWords = getDueWords();
+            document.getElementById('words-due').textContent = dueWords.length;
 
-            const accuracy = appState.stats.totalAnswers > 0 ?
-                Math.round((appState.stats.correctAnswers / appState.stats.totalAnswers) * 100) : 0;
-            document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
+            // Words mastered (repetitions >= 3)
+            document.getElementById('words-learned').textContent = appState.wordsLearned.size;
+
+            // Words in progress (started but not mastered)
+            const wordsInProgress = Object.keys(appState.wordProgress).length - appState.wordsLearned.size;
+            document.getElementById('words-learning').textContent = Math.max(0, wordsInProgress);
+
+            // Study streak
+            document.getElementById('study-streak').textContent = appState.stats.streak;
         }
 
         // Update stats view
