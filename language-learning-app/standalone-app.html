@@ -451,310 +451,10 @@
             transition: all var(--transition-fast);
         }
 
-        /* Step 2: Show word and details - Celebrate the reveal */
-        .word-details {
-            display: none;
-        }
-
-        .word-details.visible {
-            display: block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            width: 100%;
-            flex: 1 0 auto;
-            min-height: 200px;
-        }
-
-        .english-word {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: var(--space-sm);
-            letter-spacing: -0.02em;
-        }
-
-        .part-of-speech {
-            text-align: center;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            font-weight: 500;
-            margin-bottom: var(--space-xl);
-            letter-spacing: 0.05em;
-        }
-
-        .example-sentence {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border-left: 4px solid var(--secondary);
-            margin: 2rem 0;
-            font-style: italic;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .chinese-section {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: var(--bg-card);
-            border-radius: 0.75rem;
-            display: none;
-        }
-
-        .chinese-section.visible {
-            display: block;
-        }
-
-        .chinese-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .chinese-words {
-            font-size: 1.5rem;
-            color: var(--secondary);
-        }
-
-        .toggle-chinese-btn {
-            padding: 0.75rem 1.5rem;
-            background: var(--bg-card);
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 1rem 0;
-        }
-
+        /* Simplified - using inline styles for word content */
         .toggle-chinese-btn:hover {
-            background: var(--bg-secondary);
-        }
-
-        .distance-visualization {
-            margin: var(--space-xl) 0;
-            padding: var(--space-lg);
-            background: var(--bg-card);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-light);
-        }
-
-        .cultural-insight {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-sm);
-            padding: var(--space-md);
-            background: rgba(237, 100, 166, 0.1);
-            border: 1px solid rgba(237, 100, 166, 0.2);
-            border-radius: 0.5rem;
-            margin-bottom: var(--space-lg);
-            animation: fadeIn var(--transition-base) ease-out;
-        }
-
-        .insight-icon {
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .insight-text {
-            font-size: 0.875rem;
-            line-height: 1.5;
-            color: var(--text-secondary);
-        }
-
-        .distance-item {
-            margin: var(--space-lg) 0;
-            position: relative;
-        }
-
-        .distance-item:first-child {
-            margin-top: 0;
-        }
-
-        .distance-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .distance-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-sm);
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .distance-label-text {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .distance-icon {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .distance-value {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .distance-bar {
-            background: var(--bg-elevated);
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .distance-bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            transition: width var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .distance-bar-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        .distance-bar-fill.meaning {
-            background: linear-gradient(90deg, #4299e1, #3182ce);
-            box-shadow: 0 0 10px rgba(66, 153, 225, 0.4);
-        }
-
-        .distance-bar-fill.visual {
-            background: linear-gradient(90deg, #9f7aea, #805ad5);
-            box-shadow: 0 0 10px rgba(159, 122, 234, 0.4);
-        }
-
-        .distance-bar-fill.pronunciation {
-            background: linear-gradient(90deg, #ed64a6, #d53f8c);
-            box-shadow: 0 0 10px rgba(237, 100, 166, 0.4);
-        }
-
-        /* Stagger animation for distance bars */
-        .distance-item:nth-child(1) .distance-bar-fill {
-            animation-delay: 0.1s;
-        }
-
-        .distance-item:nth-child(2) .distance-bar-fill {
-            animation-delay: 0.2s;
-        }
-
-        .distance-item:nth-child(3) .distance-bar-fill {
-            animation-delay: 0.3s;
-        }
-
-        /* Step 3: Rating buttons - Assessment moment */
-        .rating-section {
-            margin-top: var(--space-xl);
-            display: none;
-            opacity: 0;
-        }
-
-        .rating-section.visible {
-            display: block;
-            animation: fadeInUp var(--transition-base) ease-out 0.2s forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .rating-prompt {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-lg);
-            letter-spacing: 0.02em;
-        }
-
-        .rating-buttons {
-            display: flex;
-            gap: var(--space-md);
-            justify-content: center;
-        }
-
-        .rating-btn {
-            flex: 1;
-            max-width: 180px;
-            padding: var(--space-lg);
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rating-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .rating-btn:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .rating-btn.good {
-            background: linear-gradient(135deg, var(--success), #38a169);
-            color: white;
-        }
-
-        .rating-btn.normal {
-            background: linear-gradient(135deg, var(--warning), #dd6b20);
-            color: white;
-        }
-
-        .rating-btn.bad {
-            background: linear-gradient(135deg, var(--danger), #e53e3e);
-            color: white;
+            background: var(--bg-elevated) !important;
+            transform: translateY(-1px);
         }
 
         .rating-btn:hover {
@@ -762,21 +462,8 @@
             box-shadow: var(--shadow-lg);
         }
 
-        .rating-btn.good:hover {
-            box-shadow: var(--shadow-lg), 0 0 20px rgba(72, 187, 120, 0.4);
-        }
-
-        .rating-btn.normal:hover {
-            box-shadow: var(--shadow-lg), 0 0 20px rgba(237, 137, 54, 0.4);
-        }
-
-        .rating-btn.bad:hover {
-            box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 101, 101, 0.4);
-        }
-
         .rating-btn:active {
             transform: translateY(-1px) scale(0.98);
-            transition: all var(--transition-fast);
         }
 
         /* Settings View */
@@ -978,84 +665,82 @@
 
                 <div id="learning-content">
                     <div class="learning-card">
-                        <!-- Step 1: Show Definition First -->
-                        <div class="definition-step" id="definition-step">
-                            <div class="word-status-badge" id="word-status-badge"></div>
-                            <p class="definition-prompt">What word has this meaning?</p>
-                            <div class="definition-text" id="definition-display"></div>
-                            <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
-                        </div>
+                        <!-- SIMPLIFIED: Single container, toggle sections -->
+                        <div id="word-container">
+                            <!-- Status Badge - Always visible -->
+                            <div class="word-status-badge" id="word-status-badge" style="margin-bottom: 2rem;"></div>
 
-                        <!-- Step 2: Show Word and Details (hidden initially) -->
-                        <div class="word-details" id="word-details">
-                            <div class="english-word" id="current-word"></div>
-                            <div class="part-of-speech" id="part-of-speech"></div>
-
-                            <div class="example-sentence" id="example"></div>
-
-                            <button class="toggle-chinese-btn" onclick="toggleChinese()">
-                                <span id="chinese-toggle-text">Show Chinese Reference</span>
-                            </button>
-
-                            <div class="chinese-section" id="chinese-section">
-                                <div class="chinese-label">Chinese Translation:</div>
-                                <div class="chinese-words" id="chinese-words"></div>
+                            <!-- Definition Section -->
+                            <div id="definition-section">
+                                <p class="definition-prompt">What word has this meaning?</p>
+                                <div class="definition-text" id="definition-display"></div>
+                                <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
                             </div>
 
-                            <div class="distance-visualization" id="distance-viz">
-                                <!-- Cultural insight hint -->
-                                <div class="cultural-insight" id="cultural-insight" style="display: none;">
-                                    <div class="insight-icon">💡</div>
-                                    <div class="insight-text" id="insight-text"></div>
+                            <!-- Word Details Section - Initially hidden -->
+                            <div id="word-section" style="display: none;">
+                                <h1 class="english-word" id="current-word" style="font-size: 4rem; font-weight: 700; color: #667eea; text-align: center; margin: 2rem 0;"></h1>
+
+                                <p class="part-of-speech" id="part-of-speech" style="text-align: center; font-size: 1rem; color: #a0aec0; font-style: italic; margin-bottom: 2rem;"></p>
+
+                                <div class="example-sentence" id="example" style="background: #242b4a; padding: 1.5rem; border-radius: 0.75rem; border-left: 4px solid #9f7aea; margin: 2rem 0; font-style: italic; font-size: 1.1rem; color: #e2e8f0;"></div>
+
+                                <button class="toggle-chinese-btn" onclick="toggleChinese()" style="padding: 0.75rem 1.5rem; background: #242b4a; color: #f7fafc; border: 1px solid #4a5568; border-radius: 0.5rem; cursor: pointer; margin: 1rem 0;">
+                                    <span id="chinese-toggle-text">Show Chinese Reference</span>
+                                </button>
+
+                                <div class="chinese-section" id="chinese-section" style="display: none; margin: 2rem 0; padding: 1.5rem; background: #242b4a; border-radius: 0.75rem;">
+                                    <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 0.5rem;">Chinese Translation:</div>
+                                    <div class="chinese-words" id="chinese-words" style="font-size: 1.5rem; color: #9f7aea;"></div>
                                 </div>
 
-                                <div class="distance-item">
-                                    <div class="distance-label">
-                                        <span class="distance-label-text">
-                                            <span class="distance-icon">🧠</span>
-                                            <span>Cultural Meaning Distance</span>
-                                        </span>
-                                        <span class="distance-value" id="meaning-distance-value">0.0</span>
+                                <!-- Cultural Insight -->
+                                <div class="cultural-insight" id="cultural-insight" style="display: none; align-items: flex-start; gap: 0.5rem; padding: 1rem; background: rgba(237, 100, 166, 0.1); border: 1px solid rgba(237, 100, 166, 0.2); border-radius: 0.5rem; margin: 1.5rem 0;">
+                                    <div style="font-size: 1.25rem;">💡</div>
+                                    <div class="insight-text" id="insight-text" style="font-size: 0.875rem; line-height: 1.5; color: #a0aec0;"></div>
+                                </div>
+
+                                <!-- Distance Visualization -->
+                                <div class="distance-visualization" id="distance-viz" style="margin: 2rem 0; padding: 1.5rem; background: #242b4a; border-radius: 0.75rem; border: 1px solid #2d3748;">
+                                    <div class="distance-item" style="margin: 1.5rem 0;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem; color: #a0aec0;">
+                                            <span><span style="font-size: 1.2rem; opacity: 0.8;">🧠</span> Cultural Meaning Distance</span>
+                                            <span id="meaning-distance-value" style="font-weight: 600; color: #e2e8f0;">0.0</span>
+                                        </div>
+                                        <div style="background: #2d3454; height: 10px; border-radius: 5px; overflow: hidden;">
+                                            <div id="meaning-distance-bar" style="background: linear-gradient(90deg, #4299e1, #3182ce); height: 100%; width: 0%; transition: width 0.5s;"></div>
+                                        </div>
                                     </div>
-                                    <div class="distance-bar">
-                                        <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
+
+                                    <div class="distance-item" style="margin: 1.5rem 0;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem; color: #a0aec0;">
+                                            <span><span style="font-size: 1.2rem; opacity: 0.8;">👁️</span> Visual Distance</span>
+                                            <span id="visual-distance-value" style="font-weight: 600; color: #e2e8f0;">0.0</span>
+                                        </div>
+                                        <div style="background: #2d3454; height: 10px; border-radius: 5px; overflow: hidden;">
+                                            <div id="visual-distance-bar" style="background: linear-gradient(90deg, #9f7aea, #805ad5); height: 100%; width: 0%; transition: width 0.5s;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="distance-item" style="margin: 1.5rem 0;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem; color: #a0aec0;">
+                                            <span><span style="font-size: 1.2rem; opacity: 0.8;">🗣️</span> Pronunciation Distance</span>
+                                            <span id="pronunciation-distance-value" style="font-weight: 600; color: #e2e8f0;">0.0</span>
+                                        </div>
+                                        <div style="background: #2d3454; height: 10px; border-radius: 5px; overflow: hidden;">
+                                            <div id="pronunciation-distance-bar" style="background: linear-gradient(90deg, #ed64a6, #d53f8c); height: 100%; width: 0%; transition: width 0.5s;"></div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="distance-item">
-                                    <div class="distance-label">
-                                        <span class="distance-label-text">
-                                            <span class="distance-icon">👁️</span>
-                                            <span>Visual Distance</span>
-                                        </span>
-                                        <span class="distance-value" id="visual-distance-value">0.0</span>
+                                <!-- Rating Buttons -->
+                                <div class="rating-section" id="rating-section">
+                                    <p style="text-align: center; font-size: 1rem; font-weight: 500; color: #a0aec0; margin: 2rem 0 1.5rem 0;">How well do you know this word?</p>
+                                    <div class="rating-buttons" style="display: flex; gap: 1rem; justify-content: center;">
+                                        <button class="rating-btn good" onclick="rateWord('good')" style="flex: 1; max-width: 180px; padding: 1.5rem; border: none; border-radius: 0.75rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #48bb78, #38a169); color: white;">I Know It</button>
+                                        <button class="rating-btn normal" onclick="rateWord('normal')" style="flex: 1; max-width: 180px; padding: 1.5rem; border: none; border-radius: 0.75rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #ed8936, #dd6b20); color: white;">Somewhat</button>
+                                        <button class="rating-btn bad" onclick="rateWord('bad')" style="flex: 1; max-width: 180px; padding: 1.5rem; border: none; border-radius: 0.75rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #f56565, #e53e3e); color: white;">New to Me</button>
                                     </div>
-                                    <div class="distance-bar">
-                                        <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
-                                    </div>
-                                </div>
-
-                                <div class="distance-item">
-                                    <div class="distance-label">
-                                        <span class="distance-label-text">
-                                            <span class="distance-icon">🗣️</span>
-                                            <span>Pronunciation Distance</span>
-                                        </span>
-                                        <span class="distance-value" id="pronunciation-distance-value">0.0</span>
-                                    </div>
-                                    <div class="distance-bar">
-                                        <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: Rating Buttons (appear after reveal) -->
-                            <div class="rating-section" id="rating-section">
-                                <p class="rating-prompt">How well do you know this word?</p>
-                                <div class="rating-buttons">
-                                    <button class="rating-btn good" onclick="rateWord('good')">I Know It</button>
-                                    <button class="rating-btn normal" onclick="rateWord('normal')">Somewhat</button>
-                                    <button class="rating-btn bad" onclick="rateWord('bad')">New to Me</button>
                                 </div>
                             </div>
                         </div>
@@ -1441,7 +1126,7 @@
             showNextWord();
         }
 
-        // Show next word - Step 1: Show definition
+        // Show next word - SIMPLIFIED
         function showNextWord() {
             if (appState.currentIndex >= appState.currentSession.length) {
                 completeSession();
@@ -1449,7 +1134,6 @@
             }
 
             const word = appState.currentSession[appState.currentIndex];
-            console.log('showNextWord() - Current word:', word);
             const progress = (appState.currentIndex / appState.currentSession.length) * 100;
 
             // Reset state
@@ -1458,25 +1142,22 @@
             // Update progress bar
             document.getElementById('progress-fill').style.width = `${progress}%`;
 
-            // Step 1: Show only definition
-            document.getElementById('definition-step').style.display = 'block';
-            document.getElementById('word-details').classList.remove('visible');
-            document.getElementById('rating-section').classList.remove('visible');
-            document.getElementById('chinese-section').classList.remove('visible');
+            // Show definition section, hide word section
+            document.getElementById('definition-section').style.display = 'block';
+            document.getElementById('word-section').style.display = 'none';
+            document.getElementById('chinese-section').style.display = 'none';
 
             // Set definition
             document.getElementById('definition-display').textContent = word.definition;
 
-            // Show word status badge (NEW vs REVIEW)
+            // Show word status badge
             const badge = document.getElementById('word-status-badge');
             const isReview = appState.wordProgress[word.english] && appState.wordProgress[word.english].lastReview;
-            badge.textContent = isReview ? 'Review' : 'New';
+            badge.textContent = isReview ? 'REVIEW' : 'NEW';
             badge.className = 'word-status-badge ' + (isReview ? 'review' : 'new');
 
-            // Prepare word details (hidden)
-            const wordElement = document.getElementById('current-word');
-            wordElement.textContent = word.english;
-            console.log('Set current-word to:', word.english, 'Element text:', wordElement.textContent);
+            // Populate word details (while hidden)
+            document.getElementById('current-word').textContent = word.english;
             document.getElementById('part-of-speech').textContent = word.partOfSpeech;
             document.getElementById('example').textContent = `"${word.example}"`;
             document.getElementById('chinese-words').textContent = word.chinese.join(', ');
@@ -1504,63 +1185,36 @@
                 insightElement.style.display = 'none';
             }
 
-            // Reset Chinese toggle button text
+            // Reset Chinese toggle
             document.getElementById('chinese-toggle-text').textContent = 'Show Chinese Reference';
 
             // Auto-show Chinese if setting enabled
             if (appState.settings.autoChinese) {
-                document.getElementById('chinese-section').classList.add('visible');
+                document.getElementById('chinese-section').style.display = 'block';
                 document.getElementById('chinese-toggle-text').textContent = 'Hide Chinese Reference';
             }
         }
 
-        // Reveal word - Step 2: Show word and details
+        // Reveal word - ULTRA SIMPLE
         function revealWord() {
-            console.log('revealWord() called');
             appState.currentWordRevealed = true;
 
-            // Hide definition step
-            const defStep = document.getElementById('definition-step');
-            console.log('definition-step element:', defStep);
-            if (defStep) {
-                defStep.style.display = 'none';
-                console.log('definition-step hidden');
-            }
-
-            // Show word details
-            const wordDetails = document.getElementById('word-details');
-            console.log('word-details element:', wordDetails);
-            console.log('word-details innerHTML length:', wordDetails ? wordDetails.innerHTML.length : 'null');
-            if (wordDetails) {
-                wordDetails.classList.add('visible');
-                wordDetails.style.display = 'block';
-                wordDetails.style.opacity = '1';
-                console.log('word-details classList:', wordDetails.classList);
-                console.log('word-details computedStyle display:', window.getComputedStyle(wordDetails).display);
-            }
-
-            // Show rating buttons
-            const ratingSection = document.getElementById('rating-section');
-            console.log('rating-section element:', ratingSection);
-            if (ratingSection) {
-                ratingSection.classList.add('visible');
-                console.log('rating-section shown');
-            }
-
-            console.log('revealWord() completed');
+            // Hide definition, show word
+            document.getElementById('definition-section').style.display = 'none';
+            document.getElementById('word-section').style.display = 'block';
         }
 
-        // Toggle Chinese reference
+        // Toggle Chinese reference - SIMPLE
         function toggleChinese() {
-            const chineseSection = document.getElementById('chinese-section');
-            const toggleText = document.getElementById('chinese-toggle-text');
+            const section = document.getElementById('chinese-section');
+            const text = document.getElementById('chinese-toggle-text');
 
-            if (chineseSection.classList.contains('visible')) {
-                chineseSection.classList.remove('visible');
-                toggleText.textContent = 'Show Chinese Reference';
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                text.textContent = 'Hide Chinese Reference';
             } else {
-                chineseSection.classList.add('visible');
-                toggleText.textContent = 'Hide Chinese Reference';
+                section.style.display = 'none';
+                text.textContent = 'Show Chinese Reference';
             }
         }
 
@@ -1775,14 +1429,6 @@
         }
 
         // Initialize
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded');
-            console.log('completeVocabularyData exists:', typeof completeVocabularyData !== 'undefined');
-            console.log('Vocabulary data length:', completeVocabularyData ? completeVocabularyData.length : 0);
-            if (completeVocabularyData && completeVocabularyData.length > 0) {
-                console.log('First word:', completeVocabularyData[0]);
-            }
-        });
         loadData();
     </script>
 </body>
