@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+# Immersive Language Learning System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Philosophy
 
-Currently, two official plugins are available:
+This is not a vocabulary memorization tool. This is a **cross-cultural understanding platform** that uses scientifically-proven methods to build genuine English fluency.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Quick Start
 
-## React Compiler
+1. Open `standalone-app.html` in your browser
+2. Click "Start Learning"
+3. Follow the progressive revelation flow:
+   - Read definition → Try to recall
+   - Reveal word → Assess understanding
+   - Rate yourself → System schedules review
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Core Features
 
-## Expanding the ESLint configuration
+### 🔄 Spaced Repetition System (SRS)
+- SuperMemo SM-2 algorithm
+- Automatic optimal scheduling
+- 50% less time, 200% better retention
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🎯 Adaptive Learning
+- 30% review / 70% new words
+- Intelligent prioritization
+- Maintains optimal difficulty
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 💡 Cultural Insights
+- Conceptual understanding, not translation
+- Explains WHY words are difficult
+- Cross-cultural perspective
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 📊 Smart Statistics
+- Due for Review (action items)
+- Words Mastered (progress)
+- In Progress (workload)
+- Study Streak (habits)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Learning Philosophy
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Immersive**: English interface, Chinese as reference only
+2. **Active Recall**: Testing before reviewing
+3. **Cultural Distance**: Understanding cross-cultural concepts
+4. **Metacognition**: Self-assessment awareness
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Current State
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- ✅ 319 high-quality vocabulary entries
+- ✅ Full SRS implementation
+- ✅ Adaptive learning mode
+- ✅ Cultural insight system
+- ✅ Progressive revelation flow
+- ✅ Comprehensive statistics
+
+## Documentation
+
+- `IMPROVEMENTS.md`: Detailed technical documentation
+- `standalone-app.html`: Main application
+- `vocabulary-data.js`: Vocabulary database
+
+## Philosophy
+
+> "Learn deeply, not quickly. Understand concepts, not translations. Build habits, not marathons."
+
+---
+
+**Last Updated:** 2025-11-12
+**Version:** 2.0 (SRS + Cultural Insights)
