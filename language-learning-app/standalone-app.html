@@ -12,26 +12,62 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #334155;
-            --text: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #475569;
+            /* Refined color palette - softer, more elegant */
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --primary-light: #7f9cf5;
+            --secondary: #9f7aea;
+            --accent: #ed64a6;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+
+            /* Sophisticated background layers */
+            --bg: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --bg-card: #242b4a;
+            --bg-elevated: #2d3454;
+
+            /* Refined text hierarchy */
+            --text: #f7fafc;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --text-tertiary: #718096;
+            --border: #4a5568;
+            --border-light: #2d3748;
+
+            /* Spacing system (8px base, golden ratio progression) */
+            --space-xs: 0.5rem;   /* 8px */
+            --space-sm: 0.75rem;  /* 12px */
+            --space-md: 1rem;     /* 16px */
+            --space-lg: 1.618rem; /* 26px - golden ratio */
+            --space-xl: 2.618rem; /* 42px - golden ratio */
+            --space-2xl: 4.236rem; /* 68px - golden ratio */
+
+            /* Shadows for depth */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.4);
+
+            /* Transitions - smooth and purposeful */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.618; /* Golden ratio for readability */
+            letter-spacing: -0.011em; /* Refined tracking */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
@@ -40,21 +76,22 @@
             padding: 0 20px;
         }
 
-        /* Header */
+        /* Header - Elegant and floating */
         header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid var(--border-light);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: var(--shadow-md);
         }
 
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: var(--space-lg) var(--space-xl);
         }
 
         .logo {
@@ -64,24 +101,44 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.02em;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: var(--space-xl);
             list-style: none;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-base);
             cursor: pointer;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width var(--transition-base);
         }
 
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--primary);
+        }
+
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Views */
@@ -143,13 +200,34 @@
         }
 
         .btn {
-            padding: 1rem 2rem;
+            padding: var(--space-md) var(--space-xl);
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 0.625rem;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 400px;
+            height: 400px;
         }
 
         .btn-primary {
@@ -158,8 +236,13 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+            transition: all var(--transition-fast);
         }
 
         .btn-secondary {
@@ -170,6 +253,13 @@
 
         .btn-secondary:hover {
             background: var(--bg-card);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+            transition: all var(--transition-fast);
         }
 
         /* Learning View - New Design */
@@ -179,92 +269,219 @@
         }
 
         .progress-bar {
-            background: var(--bg-secondary);
-            height: 8px;
-            border-radius: 4px;
+            background: var(--bg-elevated);
+            height: 6px;
+            border-radius: 3px;
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: var(--space-xl);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         .progress-fill {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             height: 100%;
-            transition: width 0.3s;
+            transition: width var(--transition-base) ease-out;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .learning-card {
             background: var(--bg-secondary);
             border-radius: 1.5rem;
-            padding: 3rem;
-            border: 2px solid var(--border);
-            margin-bottom: 2rem;
+            padding: var(--space-2xl);
+            border: 1px solid var(--border-light);
+            margin-bottom: var(--space-xl);
             min-height: 500px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Step 1: Show definition */
+        .learning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            opacity: 0.6;
+        }
+
+        /* Step 1: Show definition - The hero moment */
         .definition-step {
             text-align: center;
+            animation: fadeIn var(--transition-slow) ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .definition-prompt {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xl);
         }
 
         .definition-text {
             font-size: 2rem;
-            line-height: 1.6;
+            font-weight: 300;
+            line-height: 1.618;
             color: var(--text);
-            margin: 3rem 0;
-            padding: 2rem;
+            margin: var(--space-2xl) 0;
+            padding: var(--space-xl);
             background: var(--bg-card);
             border-radius: 1rem;
-            border-left: 4px solid var(--primary);
+            border-left: 3px solid var(--primary);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            transition: all var(--transition-base);
+        }
+
+        .definition-text::before {
+            content: '"';
+            position: absolute;
+            top: -0.2em;
+            left: 0.3em;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.15;
+            font-family: Georgia, serif;
         }
 
         .reveal-btn {
-            padding: 1.2rem 3rem;
-            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
             border-radius: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reveal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
 
         .reveal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
         }
 
-        /* Step 2: Show word and details */
+        .reveal-btn:hover::before {
+            left: 100%;
+        }
+
+        .reveal-btn:active {
+            transform: translateY(0) scale(0.98);
+            transition: all var(--transition-fast);
+        }
+
+        /* Step 2: Show word and details - Celebrate the reveal */
         .word-details {
             display: none;
+            opacity: 0;
         }
 
         .word-details.visible {
             display: block;
+            animation: revealWord var(--transition-slow) ease-out forwards;
+        }
+
+        @keyframes revealWord {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            60% {
+                transform: scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .english-word {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 700;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--space-sm);
+            letter-spacing: -0.02em;
+            animation: wordPulse 0.6s ease-out;
+        }
+
+        @keyframes wordPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .part-of-speech {
             text-align: center;
-            font-size: 1.1rem;
-            color: var(--text-secondary);
+            font-size: 1rem;
+            color: var(--text-tertiary);
             font-style: italic;
-            margin-bottom: 2rem;
+            font-weight: 500;
+            margin-bottom: var(--space-xl);
+            letter-spacing: 0.05em;
         }
 
         .example-sentence {
@@ -316,99 +533,226 @@
         }
 
         .distance-visualization {
-            margin: 2rem 0;
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-light);
         }
 
         .distance-item {
-            margin: 1rem 0;
+            margin: var(--space-lg) 0;
+            position: relative;
+        }
+
+        .distance-item:first-child {
+            margin-top: 0;
+        }
+
+        .distance-item:last-child {
+            margin-bottom: 0;
         }
 
         .distance-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            font-size: 0.875rem;
             color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .distance-label-text {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .distance-icon {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .distance-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
         }
 
         .distance-bar {
-            background: var(--bg-card);
-            height: 8px;
-            border-radius: 4px;
+            background: var(--bg-elevated);
+            height: 10px;
+            border-radius: 5px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .distance-bar-fill {
             height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s;
+            border-radius: 5px;
+            transition: width var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .distance-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .distance-bar-fill.meaning {
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            box-shadow: 0 0 10px rgba(66, 153, 225, 0.4);
         }
 
         .distance-bar-fill.visual {
-            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+            background: linear-gradient(90deg, #9f7aea, #805ad5);
+            box-shadow: 0 0 10px rgba(159, 122, 234, 0.4);
         }
 
         .distance-bar-fill.pronunciation {
-            background: linear-gradient(90deg, #ec4899, #db2777);
+            background: linear-gradient(90deg, #ed64a6, #d53f8c);
+            box-shadow: 0 0 10px rgba(237, 100, 166, 0.4);
         }
 
-        /* Step 3: Rating buttons appear after reveal */
+        /* Stagger animation for distance bars */
+        .distance-item:nth-child(1) .distance-bar-fill {
+            animation-delay: 0.1s;
+        }
+
+        .distance-item:nth-child(2) .distance-bar-fill {
+            animation-delay: 0.2s;
+        }
+
+        .distance-item:nth-child(3) .distance-bar-fill {
+            animation-delay: 0.3s;
+        }
+
+        /* Step 3: Rating buttons - Assessment moment */
         .rating-section {
-            margin-top: 2rem;
+            margin-top: var(--space-xl);
             display: none;
+            opacity: 0;
         }
 
         .rating-section.visible {
             display: block;
+            animation: fadeInUp var(--transition-base) ease-out 0.2s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .rating-prompt {
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
+            margin-bottom: var(--space-lg);
+            letter-spacing: 0.02em;
         }
 
         .rating-buttons {
             display: flex;
-            gap: 1rem;
+            gap: var(--space-md);
             justify-content: center;
         }
 
         .rating-btn {
             flex: 1;
-            max-width: 200px;
-            padding: 1rem;
+            max-width: 180px;
+            padding: var(--space-lg);
             border: none;
             border-radius: 0.75rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .rating-btn:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         .rating-btn.good {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), #38a169);
             color: white;
         }
 
         .rating-btn.normal {
-            background: var(--warning);
+            background: linear-gradient(135deg, var(--warning), #dd6b20);
             color: white;
         }
 
         .rating-btn.bad {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #e53e3e);
             color: white;
         }
 
         .rating-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .rating-btn.good:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .rating-btn.normal:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(237, 137, 54, 0.4);
+        }
+
+        .rating-btn.bad:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 101, 101, 0.4);
+        }
+
+        .rating-btn:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all var(--transition-fast);
         }
 
         /* Settings View */
@@ -636,8 +980,11 @@
                             <div class="distance-visualization" id="distance-viz">
                                 <div class="distance-item">
                                     <div class="distance-label">
-                                        <span>Cultural Meaning Distance</span>
-                                        <span id="meaning-distance-value">0.0</span>
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">🧠</span>
+                                            <span>Cultural Meaning Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="meaning-distance-value">0.0</span>
                                     </div>
                                     <div class="distance-bar">
                                         <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
@@ -646,8 +993,11 @@
 
                                 <div class="distance-item">
                                     <div class="distance-label">
-                                        <span>Visual Distance</span>
-                                        <span id="visual-distance-value">0.0</span>
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">👁️</span>
+                                            <span>Visual Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="visual-distance-value">0.0</span>
                                     </div>
                                     <div class="distance-bar">
                                         <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
@@ -656,8 +1006,11 @@
 
                                 <div class="distance-item">
                                     <div class="distance-label">
-                                        <span>Pronunciation Distance</span>
-                                        <span id="pronunciation-distance-value">0.0</span>
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">🗣️</span>
+                                            <span>Pronunciation Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="pronunciation-distance-value">0.0</span>
                                     </div>
                                     <div class="distance-bar">
                                         <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
