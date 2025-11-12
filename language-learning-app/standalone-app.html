@@ -564,6 +564,29 @@
             border: 1px solid var(--border-light);
         }
 
+        .cultural-insight {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            background: rgba(237, 100, 166, 0.1);
+            border: 1px solid rgba(237, 100, 166, 0.2);
+            border-radius: 0.5rem;
+            margin-bottom: var(--space-lg);
+            animation: fadeIn var(--transition-base) ease-out;
+        }
+
+        .insight-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .insight-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
         .distance-item {
             margin: var(--space-lg) 0;
             position: relative;
@@ -1003,6 +1026,12 @@
                             </div>
 
                             <div class="distance-visualization" id="distance-viz">
+                                <!-- Cultural insight hint -->
+                                <div class="cultural-insight" id="cultural-insight" style="display: none;">
+                                    <div class="insight-icon">💡</div>
+                                    <div class="insight-text" id="insight-text"></div>
+                                </div>
+
                                 <div class="distance-item">
                                     <div class="distance-label">
                                         <span class="distance-label-text">
@@ -1217,6 +1246,32 @@
             },
             currentWordRevealed: false
         };
+
+        // Cultural Insights - Cross-cultural understanding hints
+        const culturalInsights = {
+            // High meaning distance words with cultural context
+            "home": "English 'home' focuses on physical space + emotional belonging. Chinese '家' includes family relationships, filial duty, and ancestral continuity.",
+            "family": "Western 'family' often means nuclear family (parents + children). Chinese '家庭/家族' includes extended family as active, obligatory relationships.",
+            "privacy": "Western concept of personal space and individual boundaries. Less direct equivalent in Chinese culture, which values collective harmony.",
+            "friend": "English 'friend' can be casual acquaintances. Chinese '朋友' often implies deeper commitment and mutual obligations.",
+            "face": "While English has 'lose face', Chinese '面子' is a complex social currency affecting all interactions and decisions.",
+            "respect": "English respect is earned through achievement. Chinese '尊重' is hierarchical, based on age, position, and relationship.",
+            "love": "English 'love' is openly expressed emotion. Chinese '爱' is often shown through actions and care rather than words.",
+            "success": "Western success: individual achievement. Chinese success: family honor, social harmony, multi-generational impact.",
+            "time": "English treats time as commodity ('time is money'). Chinese views time as cyclical, relational ('right time for right things').",
+            "individual": "Core Western value. Chinese equivalent '个人' exists but within collective context - individual through relationships.",
+            "freedom": "Western freedom: from constraints. Chinese perspective includes freedom within social roles and responsibilities.",
+            "duty": "English duty: obligation. Chinese '责任/本分' is identity - who you are defines what you must do.",
+        };
+
+        // Get cultural insight for a word
+        function getCulturalInsight(word, meaningDistance) {
+            // Only show insights for high cultural distance words
+            if (meaningDistance >= 0.35 && culturalInsights[word.toLowerCase()]) {
+                return culturalInsights[word.toLowerCase()];
+            }
+            return null;
+        }
 
         // SRS Algorithm - Simplified SuperMemo SM-2
         function calculateNextReview(word, rating) {
@@ -1458,6 +1513,16 @@
 
             // Show/hide distance visualization based on settings
             document.getElementById('distance-viz').style.display = appState.settings.showDistance ? 'block' : 'none';
+
+            // Show cultural insight if available
+            const insight = getCulturalInsight(word.english, word.meaningDistance);
+            const insightElement = document.getElementById('cultural-insight');
+            if (insight) {
+                document.getElementById('insight-text').textContent = insight;
+                insightElement.style.display = 'flex';
+            } else {
+                insightElement.style.display = 'none';
+            }
 
             // Reset Chinese toggle button text
             document.getElementById('chinese-toggle-text').textContent = 'Show Chinese Reference';
