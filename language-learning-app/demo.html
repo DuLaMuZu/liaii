@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语言学习系统 - 演示版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .word-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .word-pos {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .word-chinese {
+            font-size: 20px;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .word-definition {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .word-example {
+            font-style: italic;
+            color: #718096;
+            padding: 10px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .scores {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .score-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .score-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .level-badge.a2 {
+            background: #ed8936;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .scores {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 语言学习系统</h1>
+            <p>基于文化距离的智能语言学习平台</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalWords">250</div>
+                <div class="label">总词汇量</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="a1Words">200</div>
+                <div class="label">A1级别</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="a2Words">50</div>
+                <div class="label">A2级别</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 搜索单词...">
+
+            <div class="filter-bar">
+                <button class="filter-btn active" data-level="all">全部</button>
+                <button class="filter-btn" data-level="A1">A1 级别</button>
+                <button class="filter-btn" data-level="A2">A2 级别</button>
+                <button class="filter-btn" data-pos="n.">名词</button>
+                <button class="filter-btn" data-pos="v.">动词</button>
+                <button class="filter-btn" data-pos="adj.">形容词</button>
+            </div>
+
+            <div id="wordList"></div>
+
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        // 示例词汇数据
+        const sampleWords = [
+            {
+                english: 'table',
+                partOfSpeech: 'n.',
+                chinese: ['桌子', '表格'],
+                definition: 'A piece of furniture with a flat top used for eating or working',
+                example: 'We sat at the table for dinner',
+                level: 'A1',
+                meaningDistance: 0.10,
+                visualDistance: 0.28,
+                pronunciationDistance: 0.80
+            },
+            {
+                english: 'happy',
+                partOfSpeech: 'adj.',
+                chinese: ['快乐的', '高兴的'],
+                definition: 'Feeling or showing pleasure',
+                example: 'I am very happy today',
+                level: 'A1',
+                meaningDistance: 0.15,
+                visualDistance: 0.27,
+                pronunciationDistance: 0.80
+            },
+            {
+                english: 'understand',
+                partOfSpeech: 'v.',
+                chinese: ['理解', '明白'],
+                definition: 'To know the meaning of something',
+                example: 'I understand what you mean',
+                level: 'A2',
+                meaningDistance: 0.20,
+                visualDistance: 0.45,
+                pronunciationDistance: 0.95
+            },
+            {
+                english: 'book',
+                partOfSpeech: 'n.',
+                chinese: ['书', '书籍'],
+                definition: 'A written work with pages that you read',
+                example: 'I am reading an interesting book',
+                level: 'A1',
+                meaningDistance: 0.10,
+                visualDistance: 0.18,
+                pronunciationDistance: 0.75
+            },
+            {
+                english: 'friend',
+                partOfSpeech: 'n.',
+                chinese: ['朋友'],
+                definition: 'A person you like and know well',
+                example: 'She is my best friend',
+                level: 'A1',
+                meaningDistance: 0.15,
+                visualDistance: 0.35,
+                pronunciationDistance: 0.85
+            },
+            {
+                english: 'interesting',
+                partOfSpeech: 'adj.',
+                chinese: ['有趣的', '有意思的'],
+                definition: 'Causing attention or curiosity',
+                example: 'This book is interesting',
+                level: 'A2',
+                meaningDistance: 0.25,
+                visualDistance: 0.48,
+                pronunciationDistance: 0.95
+            },
+            {
+                english: 'learn',
+                partOfSpeech: 'v.',
+                chinese: ['学习', '学会'],
+                definition: 'To get knowledge or skill',
+                example: 'I learn English every day',
+                level: 'A1',
+                meaningDistance: 0.15,
+                visualDistance: 0.35,
+                pronunciationDistance: 0.80
+            },
+            {
+                english: 'believe',
+                partOfSpeech: 'v.',
+                chinese: ['相信', '认为'],
+                definition: 'To think something is true',
+                example: 'I believe you',
+                level: 'A2',
+                meaningDistance: 0.25,
+                visualDistance: 0.40,
+                pronunciationDistance: 0.85
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentPos = null;
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function calculateTotalDistance(word) {
+            return (0.4 * word.meaningDistance + 0.3 * word.visualDistance + 0.3 * word.pronunciationDistance).toFixed(2);
+        }
+
+        function renderWord(word) {
+            const totalDistance = calculateTotalDistance(word);
+
+            return `
+                <div class="card">
+                    <div class="word-header">
+                        <div>
+                            <span class="word-title">${word.english}</span>
+                            <span class="level-badge ${word.level.toLowerCase()}">${word.level}</span>
+                        </div>
+                        <span class="word-pos">${word.partOfSpeech}</span>
+                    </div>
+                    <div class="word-chinese">${word.chinese.join('、')}</div>
+                    <div class="word-definition">${word.definition}</div>
+                    <div class="word-example">"${word.example}"</div>
+                    <div class="scores">
+                        <div class="score-item">
+                            <div class="score-label">含义距离</div>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${word.meaningDistance * 100}%"></div>
+                            </div>
+                            <div class="score-value">${word.meaningDistance.toFixed(2)}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">视觉距离</div>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${word.visualDistance * 100}%"></div>
+                            </div>
+                            <div class="score-value">${word.visualDistance.toFixed(2)}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">读音距离</div>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${word.pronunciationDistance * 100}%"></div>
+                            </div>
+                            <div class="score-value">${word.pronunciationDistance.toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterWords() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+            return sampleWords.filter(word => {
+                const matchesLevel = currentFilter === 'all' || word.level === currentFilter;
+                const matchesPos = !currentPos || word.partOfSpeech === currentPos;
+                const matchesSearch = !searchTerm ||
+                    word.english.toLowerCase().includes(searchTerm) ||
+                    word.chinese.some(c => c.includes(searchTerm));
+
+                return matchesLevel && matchesPos && matchesSearch;
+            });
+        }
+
+        function renderWords() {
+            const wordList = document.getElementById('wordList');
+            const filteredWords = filterWords();
+
+            if (filteredWords.length === 0) {
+                wordList.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3>没有找到符合条件的词汇</h3>
+                        <p>试试调整筛选条件或搜索关键词</p>
+                    </div>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredWords.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageWords = filteredWords.slice(startIndex, endIndex);
+
+            wordList.innerHTML = pageWords.map(renderWord).join('');
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← 上一页
+                </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += '<span style="padding: 8px;">...</span>';
+                }
+            }
+
+            html += `
+                <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    下一页 →
+                </button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            const filteredWords = filterWords();
+            const totalPages = Math.ceil(filteredWords.length / itemsPerPage);
+
+            if (page < 1 || page > totalPages) return;
+
+            currentPage = page;
+            renderWords();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 事件监听
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                if (this.dataset.level) {
+                    currentFilter = this.dataset.level;
+                    currentPos = null;
+                } else if (this.dataset.pos) {
+                    currentPos = this.dataset.pos;
+                    currentFilter = 'all';
+                }
+
+                currentPage = 1;
+                renderWords();
+            });
+        });
+
+        document.getElementById('searchBox').addEventListener('input', function() {
+            currentPage = 1;
+            renderWords();
+        });
+
+        // 初始渲染
+        renderWords();
+    </script>
+</body>
+</html>
