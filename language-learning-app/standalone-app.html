@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immersive Language Learning System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #475569;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            padding: 3rem 0;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Home View */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+        }
+
+        /* Learning View */
+        .learning-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            background: var(--bg-secondary);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            border: 2px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .word-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .english-word {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .part-of-speech {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .definition {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            margin: 2rem 0;
+            color: var(--text);
+        }
+
+        .example {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--primary);
+            margin: 2rem 0;
+            font-style: italic;
+        }
+
+        .chinese-translation {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .chinese-translation.visible {
+            display: block;
+        }
+
+        .chinese-words {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        .distance-visualization {
+            margin: 2rem 0;
+        }
+
+        .distance-item {
+            margin: 1rem 0;
+        }
+
+        .distance-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .distance-bar {
+            background: var(--bg-card);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .distance-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .distance-bar-fill.meaning {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+        }
+
+        .distance-bar-fill.visual {
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+        }
+
+        .distance-bar-fill.pronunciation {
+            background: linear-gradient(90deg, #ec4899, #db2777);
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .rating-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .rating-btn.good {
+            background: var(--success);
+            color: white;
+        }
+
+        .rating-btn.normal {
+            background: var(--warning);
+            color: white;
+        }
+
+        .rating-btn.bad {
+            background: var(--danger);
+            color: white;
+        }
+
+        .rating-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Settings View */
+        .settings-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--primary);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        /* Statistics View */
+        .stats-detail {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .stats-detail h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+        }
+
+        .completion-screen h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .completion-stats {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .english-word {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Language Learning</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showView('home', event)" class="active">Home</a></li>
+                <li><a href="#" onclick="showView('learning', event)">Learn</a></li>
+                <li><a href="#" onclick="showView('stats', event)">Statistics</a></li>
+                <li><a href="#" onclick="showView('settings', event)">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Home View -->
+        <div id="home-view" class="view active">
+            <div class="hero">
+                <h1>Immersive Language Learning</h1>
+                <p>Master English through cultural understanding and concept building</p>
+                <button class="btn btn-primary" onclick="startLearning()">Start Learning</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-words">4772</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="words-learned">0</div>
+                    <div class="stat-label">Words Learned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="study-streak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="accuracy-rate">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning View -->
+        <div id="learning-view" class="view">
+            <div class="learning-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <div id="learning-content">
+                    <div class="concept-card">
+                        <div class="word-header">
+                            <div class="english-word" id="current-word">Loading...</div>
+                            <div class="part-of-speech" id="part-of-speech"></div>
+                        </div>
+
+                        <div class="definition" id="definition"></div>
+
+                        <div class="example" id="example"></div>
+
+                        <div class="chinese-translation" id="chinese-translation">
+                            <strong>Reference:</strong>
+                            <div class="chinese-words" id="chinese-words"></div>
+                        </div>
+
+                        <div class="distance-visualization">
+                            <div class="distance-item">
+                                <div class="distance-label">
+                                    <span>Cultural Meaning Distance</span>
+                                    <span id="meaning-distance-value">0.0</span>
+                                </div>
+                                <div class="distance-bar">
+                                    <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
+                                </div>
+                            </div>
+
+                            <div class="distance-item">
+                                <div class="distance-label">
+                                    <span>Visual Distance</span>
+                                    <span id="visual-distance-value">0.0</span>
+                                </div>
+                                <div class="distance-bar">
+                                    <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
+                                </div>
+                            </div>
+
+                            <div class="distance-item">
+                                <div class="distance-label">
+                                    <span>Pronunciation Distance</span>
+                                    <span id="pronunciation-distance-value">0.0</span>
+                                </div>
+                                <div class="distance-bar">
+                                    <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rating-buttons">
+                            <button class="rating-btn good" onclick="rateWord('good')">Easy</button>
+                            <button class="rating-btn normal" onclick="rateWord('normal')">Medium</button>
+                            <button class="rating-btn bad" onclick="rateWord('bad')">Hard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="completion-screen" class="completion-screen" style="display: none;">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Session Complete!</h2>
+                    <div class="completion-stats">
+                        <div class="stats-row">
+                            <span>Words Studied:</span>
+                            <strong id="session-words">0</strong>
+                        </div>
+                        <div class="stats-row">
+                            <span>Accuracy:</span>
+                            <strong id="session-accuracy">0%</strong>
+                        </div>
+                        <div class="stats-row">
+                            <span>Time Spent:</span>
+                            <strong id="session-time">0m</strong>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startLearning()">Start New Session</button>
+                    <button class="btn btn-secondary" onclick="showView('home', event)" style="margin-top: 1rem;">Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics View -->
+        <div id="stats-view" class="view">
+            <h1 style="margin-bottom: 2rem;">Learning Statistics</h1>
+
+            <div class="stats-detail">
+                <h2>Overall Progress</h2>
+                <div class="stats-row">
+                    <span>Total Words in Database:</span>
+                    <strong id="stats-total">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Words Learned:</span>
+                    <strong id="stats-learned">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Words in Progress:</span>
+                    <strong id="stats-progress">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Success Rate:</span>
+                    <strong id="stats-success">0%</strong>
+                </div>
+            </div>
+
+            <div class="stats-detail">
+                <h2>Study Time</h2>
+                <div class="stats-row">
+                    <span>Total Study Time:</span>
+                    <strong id="stats-time">0h 0m</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Average Session:</span>
+                    <strong id="stats-avg-session">0m</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Study Streak:</span>
+                    <strong id="stats-streak">0 days</strong>
+                </div>
+            </div>
+
+            <div class="stats-detail">
+                <h2>Sources</h2>
+                <div class="stats-row">
+                    <span>Oxford 3000:</span>
+                    <strong id="stats-oxford">0 / 3868</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Academic Word List:</span>
+                    <strong id="stats-awl">0 / 547</strong>
+                </div>
+                <div class="stats-row">
+                    <span>GRE 357:</span>
+                    <strong id="stats-gre">0 / 357</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+            <h1 style="margin-bottom: 2rem;">Settings</h1>
+
+            <div class="settings-section">
+                <h2>Display Settings</h2>
+                <div class="setting-item">
+                    <span>Show Chinese Reference</span>
+                    <div class="toggle active" id="show-chinese-toggle" onclick="toggleSetting('showChinese', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>Show Distance Visualization</span>
+                    <div class="toggle active" id="show-distance-toggle" onclick="toggleSetting('showDistance', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Learning Settings</h2>
+                <div class="setting-item">
+                    <span>Words Per Session</span>
+                    <select id="words-per-session" onchange="saveSetting('wordsPerSession', this.value)">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Learning Mode</span>
+                    <select id="learning-mode" onchange="saveSetting('learningMode', this.value)">
+                        <option value="sequential">Sequential</option>
+                        <option value="random" selected>Random</option>
+                        <option value="difficulty">By Difficulty</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Data Management</h2>
+                <button class="btn btn-secondary" onclick="exportData()">Export Progress</button>
+                <button class="btn btn-secondary" onclick="importData()" style="margin-left: 1rem;">Import Progress</button>
+                <button class="btn btn-secondary" onclick="resetProgress()" style="margin-left: 1rem; background: var(--danger);">Reset Progress</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="vocabulary-data.js"></script>
+    <script>
+        // Application State
+        let appState = {
+            currentSession: [],
+            currentIndex: 0,
+            wordsLearned: new Set(),
+            wordProgress: {},
+            settings: {
+                showChinese: true,
+                showDistance: true,
+                wordsPerSession: 20,
+                learningMode: 'random'
+            },
+            stats: {
+                totalTime: 0,
+                sessions: 0,
+                correctAnswers: 0,
+                totalAnswers: 0,
+                lastStudyDate: null,
+                streak: 0
+            },
+            sessionStartTime: null,
+            sessionStats: {
+                correct: 0,
+                total: 0
+            }
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('languageLearningData');
+                if (saved && saved !== 'null') {
+                    const data = JSON.parse(saved);
+                    appState.wordsLearned = new Set(data.wordsLearned || []);
+                    appState.wordProgress = data.wordProgress || {};
+                    appState.settings = { ...appState.settings, ...(data.settings || {}) };
+                    appState.stats = { ...appState.stats, ...(data.stats || {}) };
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Continue with default state if loading fails
+            }
+            updateStats();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                wordsLearned: Array.from(appState.wordsLearned),
+                wordProgress: appState.wordProgress,
+                settings: appState.settings,
+                stats: appState.stats
+            };
+            localStorage.setItem('languageLearningData', JSON.stringify(data));
+        }
+
+        // Show view
+        function showView(viewName, e) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+            document.getElementById(`${viewName}-view`).classList.add('active');
+
+            // Add active class to clicked nav link if event exists
+            if (e && e.target) {
+                e.target.classList.add('active');
+            } else {
+                // Find and activate the corresponding nav link
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    if (link.getAttribute('onclick').includes(viewName)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            if (viewName === 'stats') {
+                updateStatsView();
+            } else if (viewName === 'settings') {
+                updateSettingsView();
+            }
+        }
+
+        // Start learning session
+        function startLearning() {
+            // Check if vocabulary data is loaded
+            if (!completeVocabularyData || completeVocabularyData.length === 0) {
+                alert('Vocabulary data is still loading. Please wait a moment and try again.');
+                return;
+            }
+
+            showView('learning');
+
+            // Get words for session
+            const wordCount = parseInt(appState.settings.wordsPerSession);
+            let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+
+            if (availableWords.length === 0) {
+                availableWords = completeVocabularyData;
+            }
+
+            // Shuffle or sort based on mode
+            if (appState.settings.learningMode === 'random') {
+                availableWords = availableWords.sort(() => Math.random() - 0.5);
+            } else if (appState.settings.learningMode === 'difficulty') {
+                availableWords = availableWords.sort((a, b) => a.totalDistance - b.totalDistance);
+            }
+
+            appState.currentSession = availableWords.slice(0, wordCount);
+            appState.currentIndex = 0;
+            appState.sessionStartTime = Date.now();
+            appState.sessionStats = { correct: 0, total: 0 };
+
+            document.getElementById('learning-content').style.display = 'block';
+            document.getElementById('completion-screen').style.display = 'none';
+
+            showNextWord();
+        }
+
+        // Show next word
+        function showNextWord() {
+            if (appState.currentIndex >= appState.currentSession.length) {
+                completeSession();
+                return;
+            }
+
+            const word = appState.currentSession[appState.currentIndex];
+            const progress = (appState.currentIndex / appState.currentSession.length) * 100;
+
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('current-word').textContent = word.english;
+            document.getElementById('part-of-speech').textContent = word.partOfSpeech;
+            document.getElementById('definition').textContent = word.definition;
+            document.getElementById('example').textContent = `"${word.example}"`;
+            document.getElementById('chinese-words').textContent = word.chinese.join(', ');
+
+            // Show/hide Chinese based on settings
+            const chineseElem = document.getElementById('chinese-translation');
+            if (appState.settings.showChinese) {
+                chineseElem.classList.add('visible');
+            } else {
+                chineseElem.classList.remove('visible');
+            }
+
+            // Update distance bars
+            document.getElementById('meaning-distance-value').textContent = word.meaningDistance.toFixed(2);
+            document.getElementById('meaning-distance-bar').style.width = `${word.meaningDistance * 100}%`;
+
+            document.getElementById('visual-distance-value').textContent = word.visualDistance.toFixed(2);
+            document.getElementById('visual-distance-bar').style.width = `${word.visualDistance * 100}%`;
+
+            document.getElementById('pronunciation-distance-value').textContent = word.pronunciationDistance.toFixed(2);
+            document.getElementById('pronunciation-distance-bar').style.width = `${word.pronunciationDistance * 100}%`;
+        }
+
+        // Rate word
+        function rateWord(rating) {
+            const word = appState.currentSession[appState.currentIndex];
+
+            // Update progress
+            if (!appState.wordProgress[word.english]) {
+                appState.wordProgress[word.english] = {
+                    reviews: 0,
+                    ratings: []
+                };
+            }
+
+            appState.wordProgress[word.english].reviews++;
+            appState.wordProgress[word.english].ratings.push(rating);
+
+            // Mark as learned if rated 'good' 3 times
+            const goodRatings = appState.wordProgress[word.english].ratings.filter(r => r === 'good').length;
+            if (goodRatings >= 3) {
+                appState.wordsLearned.add(word.english);
+            }
+
+            // Update stats
+            appState.stats.totalAnswers++;
+            appState.sessionStats.total++;
+            if (rating === 'good') {
+                appState.stats.correctAnswers++;
+                appState.sessionStats.correct++;
+            }
+
+            saveData();
+            appState.currentIndex++;
+            showNextWord();
+        }
+
+        // Complete session
+        function completeSession() {
+            document.getElementById('learning-content').style.display = 'none';
+            document.getElementById('completion-screen').style.display = 'block';
+
+            const sessionTime = Math.round((Date.now() - appState.sessionStartTime) / 60000);
+            const sessionAccuracy = appState.sessionStats.total > 0 ?
+                Math.round((appState.sessionStats.correct / appState.sessionStats.total) * 100) : 0;
+
+            document.getElementById('session-words').textContent = appState.sessionStats.total;
+            document.getElementById('session-accuracy').textContent = `${sessionAccuracy}%`;
+            document.getElementById('session-time').textContent = `${sessionTime}m`;
+
+            appState.stats.totalTime += sessionTime;
+            appState.stats.sessions++;
+
+            // Update streak
+            const today = new Date().toDateString();
+            if (appState.stats.lastStudyDate !== today) {
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                if (appState.stats.lastStudyDate === yesterday) {
+                    appState.stats.streak++;
+                } else if (appState.stats.lastStudyDate !== today) {
+                    appState.stats.streak = 1;
+                }
+                appState.stats.lastStudyDate = today;
+            }
+
+            saveData();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-words').textContent = completeVocabularyData.length;
+            document.getElementById('words-learned').textContent = appState.wordsLearned.size;
+            document.getElementById('study-streak').textContent = appState.stats.streak;
+
+            const accuracy = appState.stats.totalAnswers > 0 ?
+                Math.round((appState.stats.correctAnswers / appState.stats.totalAnswers) * 100) : 0;
+            document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
+        }
+
+        // Update stats view
+        function updateStatsView() {
+            document.getElementById('stats-total').textContent = completeVocabularyData.length;
+            document.getElementById('stats-learned').textContent = appState.wordsLearned.size;
+            document.getElementById('stats-progress').textContent = Object.keys(appState.wordProgress).length;
+
+            const successRate = appState.stats.totalAnswers > 0 ?
+                Math.round((appState.stats.correctAnswers / appState.stats.totalAnswers) * 100) : 0;
+            document.getElementById('stats-success').textContent = `${successRate}%`;
+
+            const hours = Math.floor(appState.stats.totalTime / 60);
+            const minutes = appState.stats.totalTime % 60;
+            document.getElementById('stats-time').textContent = `${hours}h ${minutes}m`;
+
+            const avgSession = appState.stats.sessions > 0 ?
+                Math.round(appState.stats.totalTime / appState.stats.sessions) : 0;
+            document.getElementById('stats-avg-session').textContent = `${avgSession}m`;
+
+            document.getElementById('stats-streak').textContent = `${appState.stats.streak} days`;
+
+            // Source stats
+            const oxford = Array.from(appState.wordsLearned).filter(w => {
+                const word = completeVocabularyData.find(v => v.english === w);
+                return word && word.source === 'oxford_3000';
+            }).length;
+            document.getElementById('stats-oxford').textContent = `${oxford} / 3868`;
+
+            const awl = Array.from(appState.wordsLearned).filter(w => {
+                const word = completeVocabularyData.find(v => v.english === w);
+                return word && word.source === 'awl';
+            }).length;
+            document.getElementById('stats-awl').textContent = `${awl} / 547`;
+
+            const gre = Array.from(appState.wordsLearned).filter(w => {
+                const word = completeVocabularyData.find(v => v.english === w);
+                return word && word.source === 'gre_357';
+            }).length;
+            document.getElementById('stats-gre').textContent = `${gre} / 357`;
+        }
+
+        // Update settings view
+        function updateSettingsView() {
+            document.getElementById('show-chinese-toggle').classList.toggle('active', appState.settings.showChinese);
+            document.getElementById('show-distance-toggle').classList.toggle('active', appState.settings.showDistance);
+            document.getElementById('words-per-session').value = appState.settings.wordsPerSession;
+            document.getElementById('learning-mode').value = appState.settings.learningMode;
+        }
+
+        // Toggle setting
+        function toggleSetting(setting, e) {
+            appState.settings[setting] = !appState.settings[setting];
+            if (e && e.target) {
+                e.target.classList.toggle('active');
+            } else {
+                // Update the toggle element directly
+                const toggleId = `show-${setting.toLowerCase().replace('show', '')}-toggle`;
+                const toggleElem = document.getElementById(toggleId);
+                if (toggleElem) {
+                    toggleElem.classList.toggle('active');
+                }
+            }
+            saveData();
+        }
+
+        // Save setting
+        function saveSetting(setting, value) {
+            // Convert numeric settings to numbers
+            if (setting === 'wordsPerSession') {
+                appState.settings[setting] = parseInt(value);
+            } else {
+                appState.settings[setting] = value;
+            }
+            saveData();
+        }
+
+        // Export data
+        function exportData() {
+            const data = localStorage.getItem('languageLearningData');
+            if (!data || data === 'null') {
+                alert('No progress data to export yet. Start learning first!');
+                return;
+            }
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `language-learning-progress-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('Progress exported successfully!');
+        }
+
+        // Import data
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        // Validate JSON
+                        const data = JSON.parse(event.target.result);
+                        if (!data.wordsLearned || !data.stats) {
+                            alert('Invalid progress file format.');
+                            return;
+                        }
+                        localStorage.setItem('languageLearningData', event.target.result);
+                        loadData();
+                        alert('Progress imported successfully!');
+                        location.reload(); // Refresh to show updated data
+                    } catch (error) {
+                        alert('Error importing file: Invalid JSON format.');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.onerror = () => {
+                    alert('Error reading file.');
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('languageLearningData');
+                location.reload();
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
