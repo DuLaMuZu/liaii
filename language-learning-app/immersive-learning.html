@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immersive Learning - Revolutionized</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #9f7aea;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --bg: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --bg-card: #242b4a;
+            --text: #f7fafc;
+            --text-secondary: #a0aec0;
+            --text-tertiary: #718096;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.618;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .learning-stage {
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .progress {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-card);
+            border-radius: 2px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 2rem;
+            padding: 4rem 3rem;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            opacity: 0.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+
+        .badge.new {
+            background: rgba(66, 153, 225, 0.15);
+            color: #4299e1;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+
+        .badge.review {
+            background: rgba(237, 137, 54, 0.15);
+            color: #ed8936;
+            border: 1px solid rgba(237, 137, 54, 0.3);
+        }
+
+        /* Phase 1: Definition */
+        .definition-phase {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .hint {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .definition {
+            font-size: 2rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text);
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border-left: 3px solid var(--primary);
+            margin: 2rem 0;
+            max-width: 700px;
+        }
+
+        /* Phase 2: Word reveal */
+        .word-phase {
+            display: none;
+            opacity: 0;
+        }
+
+        .word-phase.active {
+            display: block;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .word {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 2rem 0;
+            letter-spacing: -0.03em;
+        }
+
+        .pos {
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
+            font-style: italic;
+            margin-bottom: 3rem;
+        }
+
+        .example {
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .chinese-hint {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin: 2rem 0;
+            transition: all 0.2s;
+        }
+
+        .chinese-hint:hover {
+            background: var(--bg);
+            transform: translateY(-1px);
+        }
+
+        .chinese {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 1rem 0;
+        }
+
+        .chinese.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Cultural insight */
+        .insight {
+            display: none;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: rgba(237, 100, 166, 0.1);
+            border: 1px solid rgba(237, 100, 166, 0.2);
+            border-radius: 1rem;
+            text-align: left;
+        }
+
+        .insight.show {
+            display: flex;
+            gap: 1rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .insight-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* Phase 3: Rating */
+        .rating-phase {
+            display: none;
+            opacity: 0;
+            margin-top: 3rem;
+        }
+
+        .rating-phase.active {
+            display: block;
+            animation: fadeInUp 0.6s ease forwards 0.3s;
+        }
+
+        .rating-prompt {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            padding: 1.25rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 140px;
+            color: white;
+        }
+
+        .rating-btn.good {
+            background: linear-gradient(135deg, var(--success), #38a169);
+        }
+
+        .rating-btn.normal {
+            background: linear-gradient(135deg, var(--warning), #dd6b20);
+        }
+
+        .rating-btn.bad {
+            background: linear-gradient(135deg, var(--danger), #e53e3e);
+        }
+
+        .rating-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .rating-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Keyboard hints */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            background: var(--bg-card);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            opacity: 0.6;
+        }
+
+        .key {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: var(--bg);
+            border-radius: 0.3rem;
+            font-family: monospace;
+            margin: 0 0.25rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Completion */
+        .completion {
+            display: none;
+            text-align: center;
+        }
+
+        .completion.active {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+        }
+
+        .completion h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .completion-stats {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem auto;
+            max-width: 400px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="learning-stage">
+        <div class="progress">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+        <div class="card" id="card">
+            <!-- Content loaded dynamically -->
+        </div>
+
+        <div class="keyboard-hint">
+            <span class="key">Space</span> Skip wait ·
+            <span class="key">1</span> Know it ·
+            <span class="key">2</span> Somewhat ·
+            <span class="key">3</span> New to me
+        </div>
+    </div>
+
+    <script src="vocabulary-data.js"></script>
+    <script>
+        // State
+        let currentIndex = 0;
+        let session = [];
+        let stats = { correct: 0, total: 0 };
+        let settings = {
+            autoRevealDelay: 2000, // 2 seconds to think
+            skipWaitOnSpace: true
+        };
+
+        // Initialize
+        function init() {
+            if (!completeVocabularyData || completeVocabularyData.length === 0) {
+                alert('Vocabulary data not loaded');
+                return;
+            }
+
+            // Select 15 random words for demo
+            session = completeVocabularyData
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 15);
+
+            currentIndex = 0;
+            showNextWord();
+        }
+
+        function showNextWord() {
+            if (currentIndex >= session.length) {
+                showCompletion();
+                return;
+            }
+
+            const word = session[currentIndex];
+            const progress = (currentIndex / session.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
+            // Phase 1: Definition
+            const card = document.getElementById('card');
+            card.innerHTML = `
+                <div class="definition-phase">
+                    <span class="badge new">New</span>
+                    <div class="hint">What word has this meaning?</div>
+                    <div class="definition">${word.definition}</div>
+                </div>
+            `;
+
+            // Auto-reveal after delay (or skip with Space)
+            let revealed = false;
+            const revealTimer = setTimeout(() => {
+                if (!revealed) {
+                    revealed = true;
+                    revealWord(word);
+                }
+            }, settings.autoRevealDelay);
+
+            // Space key to skip wait
+            const spaceHandler = (e) => {
+                if (e.code === 'Space' && !revealed) {
+                    e.preventDefault();
+                    revealed = true;
+                    clearTimeout(revealTimer);
+                    revealWord(word);
+                    document.removeEventListener('keydown', spaceHandler);
+                }
+            };
+
+            if (settings.skipWaitOnSpace) {
+                document.addEventListener('keydown', spaceHandler);
+            }
+        }
+
+        function revealWord(word) {
+            const card = document.getElementById('card');
+
+            // Phase 2: Word + Details
+            const insight = word.meaningDistance >= 0.35 ? getCulturalInsight(word.english) : null;
+
+            card.innerHTML = `
+                <div class="word-phase active">
+                    <div class="word">${word.english}</div>
+                    <div class="pos">${word.partOfSpeech}</div>
+                    <div class="example">"${word.example}"</div>
+
+                    <div class="chinese-hint" onclick="toggleChinese()">
+                        中文 ▼
+                    </div>
+                    <div class="chinese" id="chinese">
+                        ${word.chinese.join(', ')}
+                    </div>
+
+                    ${insight ? `
+                        <div class="insight show">
+                            <div class="insight-icon">💡</div>
+                            <div class="insight-text">${insight}</div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="rating-phase active">
+                    <div class="rating-prompt">How well do you know this word?</div>
+                    <div class="rating-buttons">
+                        <button class="rating-btn good" onclick="rate('good')">
+                            I Know It
+                        </button>
+                        <button class="rating-btn normal" onclick="rate('normal')">
+                            Somewhat
+                        </button>
+                        <button class="rating-btn bad" onclick="rate('bad')">
+                            New to Me
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Keyboard shortcuts
+            document.onkeydown = (e) => {
+                if (e.key === '1') rate('good');
+                if (e.key === '2') rate('normal');
+                if (e.key === '3') rate('bad');
+            };
+        }
+
+        function toggleChinese() {
+            document.getElementById('chinese').classList.toggle('show');
+        }
+
+        function rate(rating) {
+            stats.total++;
+            if (rating === 'good') stats.correct++;
+
+            currentIndex++;
+            showNextWord();
+        }
+
+        function showCompletion() {
+            const card = document.getElementById('card');
+            const accuracy = Math.round((stats.correct / stats.total) * 100);
+
+            card.innerHTML = `
+                <div class="completion active">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Session Complete!</h2>
+                    <div class="completion-stats">
+                        <div class="stat-row">
+                            <span>Words Studied:</span>
+                            <strong>${stats.total}</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>Accuracy:</span>
+                            <strong>${accuracy}%</strong>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="location.reload()">
+                        Start New Session
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('progress').style.width = '100%';
+        }
+
+        function getCulturalInsight(word) {
+            const insights = {
+                "home": "English 'home' focuses on physical space + emotional belonging. Chinese '家' includes family relationships, filial duty, and ancestral continuity.",
+                "family": "Western 'family' often means nuclear family (parents + children). Chinese '家庭/家族' includes extended family as active, obligatory relationships.",
+                "privacy": "Western concept of personal space and individual boundaries. Less direct equivalent in Chinese culture, which values collective harmony.",
+                "friend": "English 'friend' can be casual acquaintances. Chinese '朋友' often implies deeper commitment and mutual obligations."
+            };
+
+            return insights[word.toLowerCase()] || null;
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
