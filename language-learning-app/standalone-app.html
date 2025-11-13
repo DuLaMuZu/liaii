@@ -590,6 +590,40 @@
             max-width: 500px;
         }
 
+        /* Keyboard Hints */
+        .keyboard-hints {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(36, 43, 74, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            z-index: 50;
+            border: 1px solid var(--border-light);
+        }
+
+        .keyboard-hints:hover {
+            opacity: 1;
+        }
+
+        .key {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: var(--bg);
+            border-radius: 0.3rem;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+            margin: 0 0.25rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -661,6 +695,13 @@
             <div class="learning-container">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <!-- Keyboard Shortcuts Hint -->
+                <div class="keyboard-hints" id="keyboard-hints">
+                    <span class="key">Space</span> Skip wait ·
+                    <span class="key">1</span> <span class="key">2</span> <span class="key">3</span> Rate ·
+                    <span class="key">C</span> Chinese
                 </div>
 
                 <div id="learning-content">
@@ -865,6 +906,37 @@
                         <option value="difficulty">By Difficulty (Easy First)</option>
                     </select>
                 </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <div>Auto-Reveal Word</div>
+                        <div class="setting-description">Automatically reveal word after think time (or press Space to skip)</div>
+                    </div>
+                    <div class="toggle active" id="auto-reveal-toggle" onclick="toggleSetting('autoReveal', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <div>Think Time</div>
+                        <div class="setting-description">Seconds to think before auto-revealing word</div>
+                    </div>
+                    <select id="think-time" onchange="saveThinkTime(this.value)">
+                        <option value="1000">1 second</option>
+                        <option value="2000" selected>2 seconds</option>
+                        <option value="3000">3 seconds</option>
+                        <option value="4000">4 seconds</option>
+                        <option value="5000">5 seconds</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <div>Keyboard Shortcuts</div>
+                        <div class="setting-description">Enable keyboard shortcuts (Space, 1/2/3, G/S/B, C)</div>
+                    </div>
+                    <div class="toggle active" id="keyboard-shortcuts-toggle" onclick="toggleSetting('keyboardShortcuts', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="settings-section">
@@ -891,7 +963,10 @@
                 showDistance: true,
                 wordsPerSession: 15,
                 learningMode: 'adaptive', // Changed default to adaptive
-                reviewMixRatio: 0.3 // 30% review, 70% new
+                reviewMixRatio: 0.3, // 30% review, 70% new
+                autoReveal: true, // Auto-reveal after think time
+                thinkTime: 2000, // Think time in milliseconds (2 seconds)
+                keyboardShortcuts: true // Enable keyboard shortcuts
             },
             stats: {
                 totalTime: 0,
@@ -906,7 +981,8 @@
                 correct: 0,
                 total: 0
             },
-            currentWordRevealed: false
+            currentWordRevealed: false,
+            autoRevealTimer: null // Timer for auto-reveal
         };
 
         // Cultural Insights - Cross-cultural understanding hints
@@ -1126,7 +1202,7 @@
             showNextWord();
         }
 
-        // Show next word - SIMPLIFIED
+        // Show next word - WITH AUTO-REVEAL
         function showNextWord() {
             if (appState.currentIndex >= appState.currentSession.length) {
                 completeSession();
@@ -1135,6 +1211,12 @@
 
             const word = appState.currentSession[appState.currentIndex];
             const progress = (appState.currentIndex / appState.currentSession.length) * 100;
+
+            // Clear any existing auto-reveal timer
+            if (appState.autoRevealTimer) {
+                clearTimeout(appState.autoRevealTimer);
+                appState.autoRevealTimer = null;
+            }
 
             // Reset state
             appState.currentWordRevealed = false;
@@ -1193,10 +1275,25 @@
                 document.getElementById('chinese-section').style.display = 'block';
                 document.getElementById('chinese-toggle-text').textContent = 'Hide Chinese Reference';
             }
+
+            // AUTO-REVEAL: Set timer to reveal word automatically
+            if (appState.settings.autoReveal && !appState.currentWordRevealed) {
+                appState.autoRevealTimer = setTimeout(() => {
+                    if (!appState.currentWordRevealed) {
+                        revealWord();
+                    }
+                }, appState.settings.thinkTime);
+            }
         }
 
-        // Reveal word - ULTRA SIMPLE
+        // Reveal word - WITH TIMER CLEANUP
         function revealWord() {
+            // Clear auto-reveal timer if exists
+            if (appState.autoRevealTimer) {
+                clearTimeout(appState.autoRevealTimer);
+                appState.autoRevealTimer = null;
+            }
+
             appState.currentWordRevealed = true;
 
             // Hide definition, show word
@@ -1348,6 +1445,9 @@
             document.getElementById('show-distance-toggle').classList.toggle('active', appState.settings.showDistance);
             document.getElementById('words-per-session').value = appState.settings.wordsPerSession;
             document.getElementById('learning-mode').value = appState.settings.learningMode;
+            document.getElementById('auto-reveal-toggle').classList.toggle('active', appState.settings.autoReveal);
+            document.getElementById('think-time').value = appState.settings.thinkTime;
+            document.getElementById('keyboard-shortcuts-toggle').classList.toggle('active', appState.settings.keyboardShortcuts);
         }
 
         // Toggle setting
@@ -1366,6 +1466,12 @@
             } else {
                 appState.settings[setting] = value;
             }
+            saveData();
+        }
+
+        // Save think time setting
+        function saveThinkTime(value) {
+            appState.settings.thinkTime = parseInt(value);
             saveData();
         }
 
@@ -1428,8 +1534,70 @@
             }
         }
 
+        // Global keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Only if keyboard shortcuts are enabled
+                if (!appState.settings.keyboardShortcuts) return;
+
+                // Only in learning view
+                const learningView = document.getElementById('learning-view');
+                if (!learningView || !learningView.classList.contains('active')) return;
+
+                // Ignore if typing in input field
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+                // Space: Skip wait / Reveal word
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    if (!appState.currentWordRevealed) {
+                        revealWord();
+                    }
+                }
+
+                // 1 / G: Rate as Good (I Know It)
+                if (e.key === '1' || e.key.toLowerCase() === 'g') {
+                    if (appState.currentWordRevealed) {
+                        e.preventDefault();
+                        rateWord('good');
+                    }
+                }
+
+                // 2 / S: Rate as Normal (Somewhat)
+                if (e.key === '2' || e.key.toLowerCase() === 's') {
+                    if (appState.currentWordRevealed) {
+                        e.preventDefault();
+                        rateWord('normal');
+                    }
+                }
+
+                // 3 / B: Rate as Bad (New to Me)
+                if (e.key === '3' || e.key.toLowerCase() === 'b') {
+                    if (appState.currentWordRevealed) {
+                        e.preventDefault();
+                        rateWord('bad');
+                    }
+                }
+
+                // C: Toggle Chinese
+                if (e.key.toLowerCase() === 'c') {
+                    if (appState.currentWordRevealed) {
+                        e.preventDefault();
+                        toggleChinese();
+                    }
+                }
+
+                // ?: Show keyboard help (future feature)
+                if (e.key === '?') {
+                    e.preventDefault();
+                    // TODO: Show keyboard shortcuts overlay
+                }
+            });
+        }
+
         // Initialize
         loadData();
+        setupKeyboardShortcuts();
     </script>
 </body>
 </html>
