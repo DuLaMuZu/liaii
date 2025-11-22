@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reveal Test</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #0a0e27;
+            color: #f7fafc;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1a1f3a;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea, #9f7aea);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 2px solid #667eea;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reveal Mechanism Test</h1>
+
+        <div id="test1" class="section">
+            <h2>Test 1: Basic display toggle</h2>
+            <div id="def1">
+                <p>Definition: To leave someone or something behind</p>
+                <button onclick="reveal1()">Reveal Word (display toggle)</button>
+            </div>
+            <div id="word1" style="display: none;">
+                <h3 style="font-size: 3rem; color: #667eea;">abandon</h3>
+                <p>v. - verb</p>
+                <p>"They had to abandon the ship"</p>
+            </div>
+        </div>
+
+        <div id="test2" class="section">
+            <h2>Test 2: Class toggle</h2>
+            <div id="def2">
+                <p>Definition: To leave someone or something behind</p>
+                <button onclick="reveal2()">Reveal Word (class toggle)</button>
+            </div>
+            <div id="word2" class="hidden">
+                <h3 style="font-size: 3rem; color: #667eea;">abandon</h3>
+                <p>v. - verb</p>
+                <p>"They had to abandon the ship"</p>
+            </div>
+        </div>
+
+        <div id="test3" class="section">
+            <h2>Test 3: Inline styles (current approach)</h2>
+            <div id="def3">
+                <p>Definition: To leave someone or something behind</p>
+                <button onclick="reveal3()">Reveal Word (inline styles)</button>
+            </div>
+            <div id="word3" style="display: none;">
+                <h1 style="font-size: 3rem; font-weight: 700; color: #667eea; text-align: center; margin: 2rem 0;">abandon</h1>
+                <p style="text-align: center; font-size: 1rem; color: #a0aec0; font-style: italic;">v. - verb</p>
+                <div style="background: #242b4a; padding: 1.5rem; border-radius: 0.75rem; color: #e2e8f0;">"They had to abandon the ship"</div>
+            </div>
+        </div>
+
+        <div id="test4" class="section">
+            <h2>Test 4: Visibility toggle</h2>
+            <div id="def4">
+                <p>Definition: To leave someone or something behind</p>
+                <button onclick="reveal4()">Reveal Word (visibility)</button>
+            </div>
+            <div id="word4" style="visibility: hidden;">
+                <h3 style="font-size: 3rem; color: #667eea;">abandon</h3>
+                <p>v. - verb</p>
+                <p>"They had to abandon the ship"</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Debug Info</h2>
+            <pre id="debug" style="background: #000; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"></pre>
+        </div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const debug = document.getElementById('debug');
+            debug.textContent += msg + '\n';
+            console.log(msg);
+        }
+
+        function reveal1() {
+            log('Test 1: display toggle');
+            document.getElementById('def1').style.display = 'none';
+            document.getElementById('word1').style.display = 'block';
+            log('- def1 display: ' + window.getComputedStyle(document.getElementById('def1')).display);
+            log('- word1 display: ' + window.getComputedStyle(document.getElementById('word1')).display);
+        }
+
+        function reveal2() {
+            log('Test 2: class toggle');
+            document.getElementById('def2').classList.add('hidden');
+            document.getElementById('word2').classList.remove('hidden');
+            log('- def2 has hidden: ' + document.getElementById('def2').classList.contains('hidden'));
+            log('- word2 has hidden: ' + document.getElementById('word2').classList.contains('hidden'));
+        }
+
+        function reveal3() {
+            log('Test 3: inline styles (current approach)');
+            const def3 = document.getElementById('def3');
+            const word3 = document.getElementById('word3');
+            log('- Before: def3 display = ' + def3.style.display + ', word3 display = ' + word3.style.display);
+            def3.style.display = 'none';
+            word3.style.display = 'block';
+            log('- After: def3 display = ' + def3.style.display + ', word3 display = ' + word3.style.display);
+            log('- Computed: def3 = ' + window.getComputedStyle(def3).display);
+            log('- Computed: word3 = ' + window.getComputedStyle(word3).display);
+            log('- word3 innerHTML length: ' + word3.innerHTML.length);
+        }
+
+        function reveal4() {
+            log('Test 4: visibility toggle');
+            document.getElementById('def4').style.visibility = 'hidden';
+            document.getElementById('word4').style.visibility = 'visible';
+            log('- def4 visibility: ' + window.getComputedStyle(document.getElementById('def4')).visibility);
+            log('- word4 visibility: ' + window.getComputedStyle(document.getElementById('word4')).visibility);
+        }
+
+        log('Test page loaded');
+        log('Browser: ' + navigator.userAgent);
+    </script>
+</body>
+</html>

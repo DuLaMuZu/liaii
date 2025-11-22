@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immersive Language Learning System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Refined color palette - softer, more elegant */
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --primary-light: #7f9cf5;
+            --secondary: #9f7aea;
+            --accent: #ed64a6;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+
+            /* Sophisticated background layers */
+            --bg: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --bg-card: #242b4a;
+            --bg-elevated: #2d3454;
+
+            /* Refined text hierarchy */
+            --text: #f7fafc;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --text-tertiary: #718096;
+            --border: #4a5568;
+            --border-light: #2d3748;
+
+            /* Spacing system (8px base, golden ratio progression) */
+            --space-xs: 0.5rem;   /* 8px */
+            --space-sm: 0.75rem;  /* 12px */
+            --space-md: 1rem;     /* 16px */
+            --space-lg: 1.618rem; /* 26px - golden ratio */
+            --space-xl: 2.618rem; /* 42px - golden ratio */
+            --space-2xl: 4.236rem; /* 68px - golden ratio */
+
+            /* Shadows for depth */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.4);
+
+            /* Transitions - smooth and purposeful */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.618; /* Golden ratio for readability */
+            letter-spacing: -0.011em; /* Refined tracking */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header - Elegant and floating */
+        header {
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg) var(--space-xl);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-base);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width var(--transition-base);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            padding: 3rem 0;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Home View */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: var(--space-md) var(--space-xl);
+            border: none;
+            border-radius: 0.625rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+            transition: all var(--transition-fast);
+        }
+
+        /* Learning View - New Design */
+        .learning-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            background: var(--bg-elevated);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--space-xl);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            transition: width var(--transition-base) ease-out;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .learning-card {
+            background: var(--bg-secondary);
+            border-radius: 1.5rem;
+            padding: var(--space-2xl);
+            border: 1px solid var(--border-light);
+            margin-bottom: var(--space-xl);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            opacity: 0.6;
+        }
+
+        /* Step 1: Show definition - The hero moment */
+        .definition-step {
+            text-align: center;
+            animation: fadeIn var(--transition-slow) ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .definition-prompt {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xl);
+        }
+
+        .definition-text {
+            font-size: 2rem;
+            font-weight: 300;
+            line-height: 1.618;
+            color: var(--text);
+            margin: var(--space-2xl) 0;
+            padding: var(--space-xl);
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border-left: 3px solid var(--primary);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            transition: all var(--transition-base);
+        }
+
+        .definition-text::before {
+            content: '"';
+            position: absolute;
+            top: -0.2em;
+            left: 0.3em;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.15;
+            font-family: Georgia, serif;
+        }
+
+        .reveal-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reveal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .reveal-btn:hover::before {
+            left: 100%;
+        }
+
+        .reveal-btn:active {
+            transform: translateY(0) scale(0.98);
+            transition: all var(--transition-fast);
+        }
+
+        /* Step 2: Show word and details - Celebrate the reveal */
+        .word-details {
+            display: none;
+            opacity: 0;
+        }
+
+        .word-details.visible {
+            display: block;
+            animation: revealWord var(--transition-slow) ease-out forwards;
+        }
+
+        @keyframes revealWord {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            60% {
+                transform: scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .english-word {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: var(--space-sm);
+            letter-spacing: -0.02em;
+            animation: wordPulse 0.6s ease-out;
+        }
+
+        @keyframes wordPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .part-of-speech {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-tertiary);
+            font-style: italic;
+            font-weight: 500;
+            margin-bottom: var(--space-xl);
+            letter-spacing: 0.05em;
+        }
+
+        .example-sentence {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--secondary);
+            margin: 2rem 0;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .chinese-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            display: none;
+        }
+
+        .chinese-section.visible {
+            display: block;
+        }
+
+        .chinese-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .chinese-words {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .toggle-chinese-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 1rem 0;
+        }
+
+        .toggle-chinese-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .distance-visualization {
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .distance-item {
+            margin: var(--space-lg) 0;
+            position: relative;
+        }
+
+        .distance-item:first-child {
+            margin-top: 0;
+        }
+
+        .distance-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .distance-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .distance-label-text {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .distance-icon {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .distance-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .distance-bar {
+            background: var(--bg-elevated);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .distance-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .distance-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .distance-bar-fill.meaning {
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            box-shadow: 0 0 10px rgba(66, 153, 225, 0.4);
+        }
+
+        .distance-bar-fill.visual {
+            background: linear-gradient(90deg, #9f7aea, #805ad5);
+            box-shadow: 0 0 10px rgba(159, 122, 234, 0.4);
+        }
+
+        .distance-bar-fill.pronunciation {
+            background: linear-gradient(90deg, #ed64a6, #d53f8c);
+            box-shadow: 0 0 10px rgba(237, 100, 166, 0.4);
+        }
+
+        /* Stagger animation for distance bars */
+        .distance-item:nth-child(1) .distance-bar-fill {
+            animation-delay: 0.1s;
+        }
+
+        .distance-item:nth-child(2) .distance-bar-fill {
+            animation-delay: 0.2s;
+        }
+
+        .distance-item:nth-child(3) .distance-bar-fill {
+            animation-delay: 0.3s;
+        }
+
+        /* Step 3: Rating buttons - Assessment moment */
+        .rating-section {
+            margin-top: var(--space-xl);
+            display: none;
+            opacity: 0;
+        }
+
+        .rating-section.visible {
+            display: block;
+            animation: fadeInUp var(--transition-base) ease-out 0.2s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .rating-prompt {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+            letter-spacing: 0.02em;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+        }
+
+        .rating-btn {
+            flex: 1;
+            max-width: 180px;
+            padding: var(--space-lg);
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .rating-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .rating-btn.good {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+        }
+
+        .rating-btn.normal {
+            background: linear-gradient(135deg, var(--warning), #dd6b20);
+            color: white;
+        }
+
+        .rating-btn.bad {
+            background: linear-gradient(135deg, var(--danger), #e53e3e);
+            color: white;
+        }
+
+        .rating-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .rating-btn.good:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .rating-btn.normal:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(237, 137, 54, 0.4);
+        }
+
+        .rating-btn.bad:hover {
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 101, 101, 0.4);
+        }
+
+        .rating-btn:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all var(--transition-fast);
+        }
+
+        /* Settings View */
+        .settings-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--primary);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Statistics View */
+        .stats-detail {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .stats-detail h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+        }
+
+        .completion-screen h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .completion-stats {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .definition-text {
+                font-size: 1.5rem;
+            }
+
+            .english-word {
+                font-size: 2.5rem;
+            }
+
+            .rating-buttons {
+                flex-direction: column;
+            }
+
+            .rating-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Language Learning</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showView('home', event)" class="active">Home</a></li>
+                <li><a href="#" onclick="showView('learning', event)">Learn</a></li>
+                <li><a href="#" onclick="showView('stats', event)">Statistics</a></li>
+                <li><a href="#" onclick="showView('settings', event)">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Home View -->
+        <div id="home-view" class="view active">
+            <div class="hero">
+                <h1>Immersive Language Learning</h1>
+                <p>Master English through cultural understanding and concept building</p>
+                <button class="btn btn-primary" onclick="startLearning()">Start Learning</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-words">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="words-learned">0</div>
+                    <div class="stat-label">Words Learned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="study-streak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="accuracy-rate">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning View - Redesigned -->
+        <div id="learning-view" class="view">
+            <div class="learning-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <div id="learning-content">
+                    <div class="learning-card">
+                        <!-- Step 1: Show Definition First -->
+                        <div class="definition-step" id="definition-step">
+                            <p class="definition-prompt">What word has this meaning?</p>
+                            <div class="definition-text" id="definition-display"></div>
+                            <button class="reveal-btn" onclick="revealWord()">Reveal Word</button>
+                        </div>
+
+                        <!-- Step 2: Show Word and Details (hidden initially) -->
+                        <div class="word-details" id="word-details">
+                            <div class="english-word" id="current-word"></div>
+                            <div class="part-of-speech" id="part-of-speech"></div>
+
+                            <div class="example-sentence" id="example"></div>
+
+                            <button class="toggle-chinese-btn" onclick="toggleChinese()">
+                                <span id="chinese-toggle-text">Show Chinese Reference</span>
+                            </button>
+
+                            <div class="chinese-section" id="chinese-section">
+                                <div class="chinese-label">Chinese Translation:</div>
+                                <div class="chinese-words" id="chinese-words"></div>
+                            </div>
+
+                            <div class="distance-visualization" id="distance-viz">
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">🧠</span>
+                                            <span>Cultural Meaning Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="meaning-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill meaning" id="meaning-distance-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">👁️</span>
+                                            <span>Visual Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="visual-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill visual" id="visual-distance-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="distance-item">
+                                    <div class="distance-label">
+                                        <span class="distance-label-text">
+                                            <span class="distance-icon">🗣️</span>
+                                            <span>Pronunciation Distance</span>
+                                        </span>
+                                        <span class="distance-value" id="pronunciation-distance-value">0.0</span>
+                                    </div>
+                                    <div class="distance-bar">
+                                        <div class="distance-bar-fill pronunciation" id="pronunciation-distance-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Rating Buttons (appear after reveal) -->
+                            <div class="rating-section" id="rating-section">
+                                <p class="rating-prompt">How well do you know this word?</p>
+                                <div class="rating-buttons">
+                                    <button class="rating-btn good" onclick="rateWord('good')">I Know It</button>
+                                    <button class="rating-btn normal" onclick="rateWord('normal')">Somewhat</button>
+                                    <button class="rating-btn bad" onclick="rateWord('bad')">New to Me</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="completion-screen" class="completion-screen" style="display: none;">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Session Complete!</h2>
+                    <div class="completion-stats">
+                        <div class="stats-row">
+                            <span>Words Studied:</span>
+                            <strong id="session-words">0</strong>
+                        </div>
+                        <div class="stats-row">
+                            <span>Accuracy:</span>
+                            <strong id="session-accuracy">0%</strong>
+                        </div>
+                        <div class="stats-row">
+                            <span>Time Spent:</span>
+                            <strong id="session-time">0m</strong>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startLearning()">Start New Session</button>
+                    <button class="btn btn-secondary" onclick="showView('home', event)" style="margin-top: 1rem;">Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics View -->
+        <div id="stats-view" class="view">
+            <h1 style="margin-bottom: 2rem;">Learning Statistics</h1>
+
+            <div class="stats-detail">
+                <h2>Overall Progress</h2>
+                <div class="stats-row">
+                    <span>Total Words in Database:</span>
+                    <strong id="stats-total">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Words Learned:</span>
+                    <strong id="stats-learned">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Words in Progress:</span>
+                    <strong id="stats-progress">0</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Success Rate:</span>
+                    <strong id="stats-success">0%</strong>
+                </div>
+            </div>
+
+            <div class="stats-detail">
+                <h2>Study Time</h2>
+                <div class="stats-row">
+                    <span>Total Study Time:</span>
+                    <strong id="stats-time">0h 0m</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Average Session:</span>
+                    <strong id="stats-avg-session">0m</strong>
+                </div>
+                <div class="stats-row">
+                    <span>Study Streak:</span>
+                    <strong id="stats-streak">0 days</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+            <h1 style="margin-bottom: 2rem;">Settings</h1>
+
+            <div class="settings-section">
+                <h2>Display Preferences</h2>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <div>Auto-show Chinese Reference</div>
+                        <div class="setting-description">Automatically display Chinese translation for each word</div>
+                    </div>
+                    <div class="toggle" id="auto-chinese-toggle" onclick="toggleSetting('autoChinese', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <div>Show Distance Visualization</div>
+                        <div class="setting-description">Display cultural distance metrics for each word</div>
+                    </div>
+                    <div class="toggle active" id="show-distance-toggle" onclick="toggleSetting('showDistance', event)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Learning Configuration</h2>
+                <div class="setting-item">
+                    <span>Words Per Session</span>
+                    <select id="words-per-session" onchange="saveSetting('wordsPerSession', this.value)">
+                        <option value="5">5 words</option>
+                        <option value="10">10 words</option>
+                        <option value="15" selected>15 words</option>
+                        <option value="20">20 words</option>
+                        <option value="30">30 words</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Learning Order</span>
+                    <select id="learning-mode" onchange="saveSetting('learningMode', this.value)">
+                        <option value="sequential">Sequential (A to Z)</option>
+                        <option value="random" selected>Random Selection</option>
+                        <option value="difficulty">By Difficulty (Easy First)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Data Management</h2>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="exportData()">Export Progress</button>
+                    <button class="btn btn-secondary" onclick="importData()">Import Progress</button>
+                    <button class="btn btn-secondary" onclick="resetProgress()" style="background: var(--danger); color: white;">Reset All Data</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="vocabulary-data.js"></script>
+    <script>
+        // Application State
+        let appState = {
+            currentSession: [],
+            currentIndex: 0,
+            wordsLearned: new Set(),
+            wordProgress: {},
+            settings: {
+                autoChinese: false,
+                showDistance: true,
+                wordsPerSession: 15,
+                learningMode: 'random'
+            },
+            stats: {
+                totalTime: 0,
+                sessions: 0,
+                correctAnswers: 0,
+                totalAnswers: 0,
+                lastStudyDate: null,
+                streak: 0
+            },
+            sessionStartTime: null,
+            sessionStats: {
+                correct: 0,
+                total: 0
+            },
+            currentWordRevealed: false
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('languageLearningData');
+                if (saved && saved !== 'null') {
+                    const data = JSON.parse(saved);
+                    appState.wordsLearned = new Set(data.wordsLearned || []);
+                    appState.wordProgress = data.wordProgress || {};
+                    appState.settings = { ...appState.settings, ...(data.settings || {}) };
+                    appState.stats = { ...appState.stats, ...(data.stats || {}) };
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+            updateStats();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                wordsLearned: Array.from(appState.wordsLearned),
+                wordProgress: appState.wordProgress,
+                settings: appState.settings,
+                stats: appState.stats
+            };
+            localStorage.setItem('languageLearningData', JSON.stringify(data));
+        }
+
+        // Show view
+        function showView(viewName, e) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+            document.getElementById(`${viewName}-view`).classList.add('active');
+
+            if (e && e.target) {
+                e.target.classList.add('active');
+            } else {
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    if (link.getAttribute('onclick').includes(viewName)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            if (viewName === 'stats') {
+                updateStatsView();
+            } else if (viewName === 'settings') {
+                updateSettingsView();
+            }
+        }
+
+        // Start learning session
+        function startLearning() {
+            if (!completeVocabularyData || completeVocabularyData.length === 0) {
+                alert('Vocabulary data is still loading. Please wait a moment and try again.');
+                return;
+            }
+
+            showView('learning');
+
+            const wordCount = parseInt(appState.settings.wordsPerSession);
+            let availableWords = completeVocabularyData.filter(w => !appState.wordsLearned.has(w.english));
+
+            if (availableWords.length === 0) {
+                availableWords = completeVocabularyData;
+            }
+
+            if (appState.settings.learningMode === 'random') {
+                availableWords = availableWords.sort(() => Math.random() - 0.5);
+            } else if (appState.settings.learningMode === 'difficulty') {
+                availableWords = availableWords.sort((a, b) => a.totalDistance - b.totalDistance);
+            }
+
+            appState.currentSession = availableWords.slice(0, wordCount);
+            appState.currentIndex = 0;
+            appState.sessionStartTime = Date.now();
+            appState.sessionStats = { correct: 0, total: 0 };
+
+            document.getElementById('learning-content').style.display = 'block';
+            document.getElementById('completion-screen').style.display = 'none';
+
+            showNextWord();
+        }
+
+        // Show next word - Step 1: Show definition
+        function showNextWord() {
+            if (appState.currentIndex >= appState.currentSession.length) {
+                completeSession();
+                return;
+            }
+
+            const word = appState.currentSession[appState.currentIndex];
+            const progress = (appState.currentIndex / appState.currentSession.length) * 100;
+
+            // Reset state
+            appState.currentWordRevealed = false;
+
+            // Update progress bar
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            // Step 1: Show only definition
+            document.getElementById('definition-step').style.display = 'block';
+            document.getElementById('word-details').classList.remove('visible');
+            document.getElementById('rating-section').classList.remove('visible');
+            document.getElementById('chinese-section').classList.remove('visible');
+
+            // Set definition
+            document.getElementById('definition-display').textContent = word.definition;
+
+            // Prepare word details (hidden)
+            document.getElementById('current-word').textContent = word.english;
+            document.getElementById('part-of-speech').textContent = word.partOfSpeech;
+            document.getElementById('example').textContent = `"${word.example}"`;
+            document.getElementById('chinese-words').textContent = word.chinese.join(', ');
+
+            // Update distance bars
+            document.getElementById('meaning-distance-value').textContent = word.meaningDistance.toFixed(2);
+            document.getElementById('meaning-distance-bar').style.width = `${word.meaningDistance * 100}%`;
+
+            document.getElementById('visual-distance-value').textContent = word.visualDistance.toFixed(2);
+            document.getElementById('visual-distance-bar').style.width = `${word.visualDistance * 100}%`;
+
+            document.getElementById('pronunciation-distance-value').textContent = word.pronunciationDistance.toFixed(2);
+            document.getElementById('pronunciation-distance-bar').style.width = `${word.pronunciationDistance * 100}%`;
+
+            // Show/hide distance visualization based on settings
+            document.getElementById('distance-viz').style.display = appState.settings.showDistance ? 'block' : 'none';
+
+            // Reset Chinese toggle button text
+            document.getElementById('chinese-toggle-text').textContent = 'Show Chinese Reference';
+
+            // Auto-show Chinese if setting enabled
+            if (appState.settings.autoChinese) {
+                document.getElementById('chinese-section').classList.add('visible');
+                document.getElementById('chinese-toggle-text').textContent = 'Hide Chinese Reference';
+            }
+        }
+
+        // Reveal word - Step 2: Show word and details
+        function revealWord() {
+            appState.currentWordRevealed = true;
+
+            // Hide definition step
+            document.getElementById('definition-step').style.display = 'none';
+
+            // Show word details
+            document.getElementById('word-details').classList.add('visible');
+
+            // Show rating buttons
+            document.getElementById('rating-section').classList.add('visible');
+        }
+
+        // Toggle Chinese reference
+        function toggleChinese() {
+            const chineseSection = document.getElementById('chinese-section');
+            const toggleText = document.getElementById('chinese-toggle-text');
+
+            if (chineseSection.classList.contains('visible')) {
+                chineseSection.classList.remove('visible');
+                toggleText.textContent = 'Show Chinese Reference';
+            } else {
+                chineseSection.classList.add('visible');
+                toggleText.textContent = 'Hide Chinese Reference';
+            }
+        }
+
+        // Rate word - Step 3: Record rating and move to next
+        function rateWord(rating) {
+            const word = appState.currentSession[appState.currentIndex];
+
+            if (!appState.wordProgress[word.english]) {
+                appState.wordProgress[word.english] = {
+                    reviews: 0,
+                    ratings: []
+                };
+            }
+
+            appState.wordProgress[word.english].reviews++;
+            appState.wordProgress[word.english].ratings.push(rating);
+
+            const goodRatings = appState.wordProgress[word.english].ratings.filter(r => r === 'good').length;
+            if (goodRatings >= 3) {
+                appState.wordsLearned.add(word.english);
+            }
+
+            appState.stats.totalAnswers++;
+            appState.sessionStats.total++;
+            if (rating === 'good') {
+                appState.stats.correctAnswers++;
+                appState.sessionStats.correct++;
+            }
+
+            saveData();
+            appState.currentIndex++;
+            showNextWord();
+        }
+
+        // Complete session
+        function completeSession() {
+            document.getElementById('learning-content').style.display = 'none';
+            document.getElementById('completion-screen').style.display = 'block';
+
+            const sessionTime = Math.round((Date.now() - appState.sessionStartTime) / 60000);
+            const sessionAccuracy = appState.sessionStats.total > 0 ?
+                Math.round((appState.sessionStats.correct / appState.sessionStats.total) * 100) : 0;
+
+            document.getElementById('session-words').textContent = appState.sessionStats.total;
+            document.getElementById('session-accuracy').textContent = `${sessionAccuracy}%`;
+            document.getElementById('session-time').textContent = `${sessionTime}m`;
+
+            appState.stats.totalTime += sessionTime;
+            appState.stats.sessions++;
+
+            const today = new Date().toDateString();
+            if (appState.stats.lastStudyDate !== today) {
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                if (appState.stats.lastStudyDate === yesterday) {
+                    appState.stats.streak++;
+                } else if (appState.stats.lastStudyDate !== today) {
+                    appState.stats.streak = 1;
+                }
+                appState.stats.lastStudyDate = today;
+            }
+
+            saveData();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-words').textContent = completeVocabularyData.length;
+            document.getElementById('words-learned').textContent = appState.wordsLearned.size;
+            document.getElementById('study-streak').textContent = appState.stats.streak;
+
+            const accuracy = appState.stats.totalAnswers > 0 ?
+                Math.round((appState.stats.correctAnswers / appState.stats.totalAnswers) * 100) : 0;
+            document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
+        }
+
+        // Update stats view
+        function updateStatsView() {
+            document.getElementById('stats-total').textContent = completeVocabularyData.length;
+            document.getElementById('stats-learned').textContent = appState.wordsLearned.size;
+            document.getElementById('stats-progress').textContent = Object.keys(appState.wordProgress).length;
+
+            const successRate = appState.stats.totalAnswers > 0 ?
+                Math.round((appState.stats.correctAnswers / appState.stats.totalAnswers) * 100) : 0;
+            document.getElementById('stats-success').textContent = `${successRate}%`;
+
+            const hours = Math.floor(appState.stats.totalTime / 60);
+            const minutes = appState.stats.totalTime % 60;
+            document.getElementById('stats-time').textContent = `${hours}h ${minutes}m`;
+
+            const avgSession = appState.stats.sessions > 0 ?
+                Math.round(appState.stats.totalTime / appState.stats.sessions) : 0;
+            document.getElementById('stats-avg-session').textContent = `${avgSession}m`;
+
+            document.getElementById('stats-streak').textContent = `${appState.stats.streak} days`;
+        }
+
+        // Update settings view
+        function updateSettingsView() {
+            document.getElementById('auto-chinese-toggle').classList.toggle('active', appState.settings.autoChinese);
+            document.getElementById('show-distance-toggle').classList.toggle('active', appState.settings.showDistance);
+            document.getElementById('words-per-session').value = appState.settings.wordsPerSession;
+            document.getElementById('learning-mode').value = appState.settings.learningMode;
+        }
+
+        // Toggle setting
+        function toggleSetting(setting, e) {
+            appState.settings[setting] = !appState.settings[setting];
+            if (e && e.target) {
+                e.target.classList.toggle('active');
+            }
+            saveData();
+        }
+
+        // Save setting
+        function saveSetting(setting, value) {
+            if (setting === 'wordsPerSession') {
+                appState.settings[setting] = parseInt(value);
+            } else {
+                appState.settings[setting] = value;
+            }
+            saveData();
+        }
+
+        // Export data
+        function exportData() {
+            const data = localStorage.getItem('languageLearningData');
+            if (!data || data === 'null') {
+                alert('No progress data to export yet. Start learning first!');
+                return;
+            }
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `language-learning-progress-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('Progress exported successfully!');
+        }
+
+        // Import data
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (!data.wordsLearned || !data.stats) {
+                            alert('Invalid progress file format.');
+                            return;
+                        }
+                        localStorage.setItem('languageLearningData', event.target.result);
+                        loadData();
+                        alert('Progress imported successfully!');
+                        location.reload();
+                    } catch (error) {
+                        alert('Error importing file: Invalid JSON format.');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.onerror = () => {
+                    alert('Error reading file.');
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('languageLearningData');
+                location.reload();
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
